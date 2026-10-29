@@ -36,14 +36,14 @@ label{display:block;font-size:14px;font-weight:600;margin:0 0 9px}
 .field::placeholder{color:#a2917c}
 .field-group{margin-bottom:17px}
 .playlist{background:rgba(104,184,225,.20);border-radius:15px;padding:15px;display:flex;align-items:center;gap:12px;margin:16px 0 18px}
-.spotify{font-size:30px;color:#123f66;flex:0 0 auto}
+.spotify{width:38px;height:38px;flex:0 0 38px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 0 10px rgba(30,215,96,.3))}.spotify svg{display:block;width:100%;height:100%}
 .playlist-copy{min-width:0;flex:1}.playlist-title{font-family:"Cormorant Garamond",serif;font-size:18px;font-weight:600}.playlist-url{font-size:12px;color:#536b9b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}
 .btn{border:0;border-radius:999px;padding:13px 18px;display:inline-flex;align-items:center;justify-content:center;gap:9px;font-weight:600;transition:transform .18s,filter .18s}
 .btn:hover{filter:brightness(1.06);transform:translateY(-1px)}
 .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
 .btn-dark{background:var(--forest2);color:#fff8eb}.btn-light{background:rgba(111,196,244,.22);color:#edf7ff;border:1px solid #d8c2a5}.btn-full{width:100%}
 .upload-box{border:1.5px dashed #68a9d1;border-radius:16px;min-height:142px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:17px;background:rgba(13,42,78,.78);cursor:pointer;overflow:hidden}
-.upload-box:hover{background:#dff2ff}.upload-icon{font-size:31px;color:#7c6546;margin-bottom:8px}.upload-main{font-size:14px;font-weight:600}.upload-sub{font-size:11px;color:#b6dff7;margin-top:7px}.preview{max-width:100%;max-height:170px;object-fit:contain;border-radius:9px;margin-top:10px}
+.upload-box:hover{background:rgba(91,180,238,.16)}.upload-icon{width:48px;height:48px;display:flex;align-items:center;justify-content:center;color:#a9e7ff;filter:drop-shadow(0 0 15px rgba(109,204,255,.6));margin-bottom:8px}.upload-icon svg{width:100%;height:100%;display:block}.upload-main{font-size:14px;font-weight:600}.upload-sub{font-size:11px;color:#b6dff7;margin-top:7px}.preview{max-width:100%;max-height:170px;object-fit:contain;border-radius:9px;margin-top:10px}
 input[type=file]{display:none}
 .notice{font-size:12px;line-height:1.5;color:#b6dff7;margin:10px 0 16px}
 .status{display:none;padding:11px 13px;border-radius:12px;font-size:13px;margin-top:12px;line-height:1.45}.status.show{display:block}.status.error{background:#f8dce5;color:#812f2a}.status.ok{background:#d6f5ff;color:#294f35}.status.info{background:#d8efff;color:#6c573b}
@@ -84,8 +84,8 @@ input[type=file]{display:none}
 .flip-area{display:grid;grid-template-columns:minmax(130px,.8fr) minmax(0,1.2fr);gap:22px;align-items:start}.big-card{width:100%;max-width:250px;margin:auto;aspect-ratio:2/3;border-radius:14px;border:1px solid #b99b6d;background:#d8efff;padding:9px}.big-card-inner{width:100%;height:100%;border-radius:8px;background:linear-gradient(145deg,#78d8ff,#315a9a);border:1px solid #fff0d8;display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff1d6;gap:14px}.big-card-inner .symbol{font-size:66px}.big-card-inner .card-word{letter-spacing:4px;font-size:12px}
 .fortune-copy{font-size:15px;line-height:1.8;white-space:pre-wrap}.fortune-label{font-size:11px;color:#967b58;letter-spacing:.15em;margin-bottom:8px}.modal-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:17px}
 .loading{display:none;align-items:center;justify-content:center;gap:9px;color:#e9d6b4;font-size:13px;margin:10px}.loading.show{display:flex}.spinner{width:15px;height:15px;border:2px solid #ffffff50;border-top-color:#f4d9a1;border-radius:50%;animation:spin .7s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
-@media(max-width:1050px){.layout{grid-template-columns:1fr 1fr}.center-panel{grid-column:1/-1;grid-row:2;min-height:360px}.left-panel{grid-column:1}.collection-panel{grid-column:2;grid-row:1/3}.deck{min-height:190px}}
-@media(max-width:680px){.shell{padding:12px 12px 16px}.hero{padding:22px 5px 20px}h1{font-size:clamp(38px,11vw,58px)}.stats{gap:7px;margin-bottom:16px}.stat{padding:10px 5px;gap:5px;min-height:76px;flex-direction:column;text-align:center;border-radius:13px}.stat-icon{font-size:20px}.stat-num{font-size:21px}.stat-label{font-size:10px}.layout{grid-template-columns:1fr;gap:13px}.left-panel,.center-panel,.collection-panel{grid-column:auto;grid-row:auto}.center-panel{min-height:350px;order:2}.collection-panel{order:3}.left-panel{order:1}.panel{padding:19px;border-radius:19px}.section-title{font-size:23px}.flip-area{grid-template-columns:1fr}.big-card{max-width:180px}.modal-card{padding:16px}.modal-title{font-size:22px}}
+@media (min-width:681px) and (max-width:1050px){.layout{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}.left-panel{grid-column:1;grid-row:1}.collection-panel{grid-column:2;grid-row:1;align-self:start;height:fit-content}.center-panel{grid-column:1/-1;grid-row:2;min-height:360px}.deck{min-height:190px}}
+@media(max-width:680px){body{background:#06224a}body:before{position:fixed;background:linear-gradient(180deg,rgba(3,16,43,.12),rgba(3,16,43,.42)),url("./ocean-background.png") center center/cover no-repeat;background-attachment:scroll}.shell{padding:12px 12px 16px}.hero{padding:22px 5px 20px}h1{font-size:clamp(38px,11vw,58px)}.stats{gap:7px;margin-bottom:16px}.stat{padding:10px 5px;gap:5px;min-height:76px;flex-direction:column;text-align:center;border-radius:13px}.stat-icon{font-size:20px}.stat-num{font-size:21px}.stat-label{font-size:10px}.layout{grid-template-columns:1fr;gap:13px}.left-panel,.center-panel,.collection-panel{grid-column:auto;grid-row:auto}.center-panel{min-height:350px;order:2}.collection-panel{order:3}.left-panel{order:1}.panel{padding:19px;border-radius:19px}.section-title{font-size:23px}.upload-icon{width:54px;height:54px}.flip-area{grid-template-columns:1fr}.big-card{max-width:180px}.modal-card{padding:16px}.modal-title{font-size:22px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;scroll-behavior:auto!important;transition:none!important}}
 </style>
 </head>
@@ -111,7 +111,14 @@ input[type=file]{display:none}
         <input class="field" id="username" type="text" placeholder="@yourusername" autocomplete="off" maxlength="50">
       </div>
       <div class="playlist">
-        <div class="spotify">◉</div>
+        <div class="spotify" aria-label="Spotify">
+          <svg viewBox="0 0 48 48" role="img" aria-hidden="true">
+            <circle cx="24" cy="24" r="22" fill="#1ED760"/>
+            <path d="M11 18.2c9.1-2.8 19.6-1.5 27 3.1" fill="none" stroke="#073c35" stroke-width="3.4" stroke-linecap="round"/>
+            <path d="M13 24.7c7.7-2.1 16.4-1.1 22.6 2.5" fill="none" stroke="#073c35" stroke-width="3.1" stroke-linecap="round"/>
+            <path d="M15 30.7c6.2-1.5 12.9-.7 17.8 2.1" fill="none" stroke="#073c35" stroke-width="2.8" stroke-linecap="round"/>
+          </svg>
+        </div>
         <div class="playlist-copy"><div class="playlist-title" id="playlistTitle">Today's Playlist</div><div class="playlist-url" id="playlistUrl">Spotify playlist</div></div>
         <button class="btn btn-dark" id="openSpotify" type="button" style="padding:10px 13px;font-size:12px;white-space:nowrap">Open ↗</button>
       </div>
@@ -122,7 +129,12 @@ input[type=file]{display:none}
       <div class="field-group">
         <label>Upload Proof</label>
         <label class="upload-box" for="proofInput" id="uploadBox">
-          <span class="upload-icon">▧</span><span class="upload-main" id="uploadMain">แนบภาพหลักฐานการ Save Playlist</span>
+          <span class="upload-icon" aria-hidden="true">
+            <svg viewBox="0 0 64 64">
+              <path d="M17 43H13a9 9 0 0 1-1-18 18 18 0 0 1 34-4 12 12 0 0 1 5 22h-4" fill="rgba(125,211,255,.13)" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M32 51V30m0 0-8 8m8-8 8 8" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span><span class="upload-main" id="uploadMain">แนบภาพหลักฐานการ Save Playlist</span>
           <img id="proofPreview" class="preview" alt="Proof preview" hidden>
         </label>
         <input id="proofInput" type="file" accept="image/png,image/jpeg,image/webp">
@@ -213,7 +225,7 @@ function renderCard(card) {
 }
 function renderCollection() {
   const host=$("collectionList");
-  if(!username()){host.innerHTML='<div class="empty">ใส่ Username เพื่อดู Collection</div>';return;}
+  if(!username()){host.innerHTML='<div class="empty">กรอก X / Twitter account เพื่อดู Collection</div>';return;}
   const rid=$("roundSelect").value;
   const filtered=collection.filter(x=>!rid || String(x.round_id)===String(rid));
   if(!filtered.length){host.innerHTML='<div class="empty">ยังไม่มีการ์ดในรอบนี้</div>';return;}
