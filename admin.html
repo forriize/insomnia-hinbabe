@@ -103,8 +103,8 @@ body:after{content:"✦ · ☾ · ✧ · ✦ · ☽ · ✧";position:fixed;inset
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* ใส่ค่า Supabase Project URL และ anon/public key ให้ตรงกับ index.html */
-const SUPABASE_URL = "YOUR_SUPABASE_URL";
-const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+const SUPABASE_URL = "https://zrqiuoxplnhsprpsgkcc.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_1eDE6vDrLVNojD4oS0Rqww_XQ_Y9EoH";
 const TABLES = {rounds:"rounds",days:"round_days",cards:"cards",checkins:"checkins",userCards:"user_cards",profiles:"admin_users"};
 const BUCKET = "fortune-cards";
 const ready = SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("YOUR_SUPABASE") && SUPABASE_ANON_KEY.length>20 && !SUPABASE_ANON_KEY.includes("YOUR_SUPABASE");
