@@ -302,7 +302,7 @@ $("checkinBtn").addEventListener("click",async()=>{
   setLoading(true);
   try {
     const fd=new FormData();fd.append("username",username());fd.append("round_day_id",$("eventDay").value);fd.append("proof",proofFile,proofFile.name);
-    const response=await fetch(`${SUPABASE_URL}/functions/v1/${CONFIG.checkinFunction}`,{method:"POST",headers:{apikey:SUPABASE_ANON_KEY,Authorization:`Bearer ${SUPABASE_ANON_KEY}`},body:fd});
+    const response=await fetch(`${SUPABASE_URL}/functions/v1/${CONFIG.checkinFunction}`,{method:"POST",headers:{apikey:SUPABASE_ANON_KEY,},body:fd});
     const result=await response.json().catch(()=>({}));
     if(!response.ok || result.error) throw new Error(result.error||result.message||"ตรวจสอบหลักฐานไม่สำเร็จ");
     setStatus("checkinStatus",result.message||"Check-in สำเร็จ! ได้รับการ์ด 2 ใบแล้ว","ok");
