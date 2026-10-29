@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#06172d"><title>Stream Your Ship — Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#080d2b;--blue:#263b79;--blue2:#51488f;--ice:#f2efff;--paper:#fbf9ff;--ink:#24264b;--muted:#797fa9;--cyan:#c9b8ff;--line:#c5c5f1;--shadow:0 18px 50px #02051f70}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:linear-gradient(180deg,rgba(3,10,29,.28),rgba(4,14,39,.72)),url("./ocean-background.png") center center/cover fixed no-repeat;font-family:"DM Sans",sans-serif;color:var(--ink)}
+body:after{content:"✦ · ☾ · ✧ · ✦ · ☽ · ✧";position:fixed;inset:0;pointer-events:none;z-index:-1;color:#c9c0ff;opacity:.17;font-size:28px;line-height:110px;letter-spacing:18px;word-break:break-all}
+.wrap{max-width:1250px;margin:auto;padding:24px 18px 42px}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;color:var(--ice);margin-bottom:24px}.brand h1{font:400 clamp(28px,5vw,43px) "Cinzel Decorative",serif;margin:0}.brand p{margin:7px 0 0;color:#a9e4ff}.top a{color:#d7f1ff;text-decoration:none;border:1px solid #6ebce7;padding:10px 14px;border-radius:999px}
+.panel{background:linear-gradient(145deg,rgba(10,33,68,.94),rgba(15,51,88,.92));color:#edf7ff;border:1px solid #68bde9;border-radius:20px;padding:22px;box-shadow:var(--shadow);margin-bottom:18px}.panel h2{font:600 29px "Cormorant Garamond",serif;margin:0 0 18px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.three{grid-template-columns:repeat(3,minmax(0,1fr))}.field{margin-bottom:13px}label{display:block;font-size:13px;font-weight:700;margin-bottom:7px}.input,select,textarea{width:100%;padding:12px 13px;border:1px solid #c5c5f1;border-radius:11px;background:rgba(12,38,72,.92);color:#edf7ff;font:inherit;outline:none}.input:focus,select:focus,textarea:focus{border-color:#2d8cc2;box-shadow:0 0 0 3px #54b5e522}textarea{min-height:90px;resize:vertical}.btn{border:0;border-radius:999px;padding:11px 17px;font:600 13px "DM Sans",sans-serif;cursor:pointer;background:#263b79;color:#f4fbff}.btn.secondary{background:#d0eaff;color:#263b79;border:1px solid #a8d1ed}.btn.danger{background:#8b3146;color:white}.btn:disabled{opacity:.45;cursor:not-allowed}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:8px}.notice{font-size:12px;color:#53758e;line-height:1.55}.status{display:none;padding:12px;border-radius:10px;font-size:13px;margin:12px 0}.status.show{display:block}.status.error{background:#f8dce5;color:#812f43}.status.ok{background:#d6f5ff;color:#174d6c}.status.info{background:#d9efff;color:#254b6b}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;min-width:650px;font-size:13px}th,td{text-align:left;padding:11px;border-bottom:1px solid #c5e0f2}th{color:#446c89;font-size:11px;text-transform:uppercase;letter-spacing:.06em}td img{width:45px;height:60px;object-fit:cover;border-radius:5px}.empty{color:#b6dff7;padding:20px;text-align:center}.pill{display:inline-block;border-radius:999px;background:rgba(111,196,244,.22);padding:5px 9px;font-size:11px;color:#d9f3ff}.hidden{display:none!important}.login{max-width:480px;margin:9vh auto}.login .btn{width:100%;padding:13px}.subhead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.subhead h2{margin-bottom:0}.divider{height:1px;background:#b8d9ee;margin:20px 0}.file{font-size:12px;max-width:100%}
+@media(max-width:760px){.grid,.three{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}.panel{padding:17px}.wrap{padding:16px 12px 30px}}
+</style></head>
+<body>
+<div class="wrap">
+<header class="top"><div class="brand"><h1>Stream Your Ship</h1><p>#ทีมหินเบ้บ · Admin Console</p></div><a href="./index.html">← Public site</a></header>
+
+<section class="panel login" id="loginPanel">
+<h2>Admin Sign in</h2>
+<div class="field"><label for="email">Email</label><input class="input" id="email" type="email" autocomplete="username" placeholder="admin@email.com"></div>
+<div class="field"><label for="password">Password</label><input class="input" id="password" type="password" autocomplete="current-password" placeholder="••••••••"></div>
+<button class="btn" id="loginBtn">Sign in</button>
+<div id="loginStatus" class="status"></div>
+<p class="notice">ใช้บัญชี Supabase Auth ที่ได้รับสิทธิ์ผู้ดูแลระบบเท่านั้น</p>
+</section>
+
+<div id="adminApp" class="hidden">
+<section class="panel">
+<div class="subhead"><h2>Dashboard</h2><button class="btn secondary" id="logoutBtn">Sign out</button></div>
+<div class="grid three" style="margin-top:16px">
+<div><span class="pill">All-time participants</span><h2 id="statAll" style="font-size:34px;margin:9px 0">—</h2></div>
+<div><span class="pill">Checked in today</span><h2 id="statToday" style="font-size:34px;margin:9px 0">—</h2></div>
+<div><span class="pill">Rounds</span><h2 id="statRounds" style="font-size:34px;margin:9px 0">—</h2></div>
+</div><div id="mainStatus" class="status"></div>
+</section>
+
+<section class="panel">
+<h2>Rounds</h2>
+<input id="roundId" type="hidden">
+<div class="grid">
+<div class="field"><label for="roundNumber">Round number</label><input class="input" id="roundNumber" type="number" min="1" placeholder="1"></div>
+<div class="field"><label for="roundName">Round title</label><input class="input" id="roundName" placeholder="Round 1"></div>
+</div>
+<div class="grid">
+<div class="field"><label for="roundActive">Status</label><select id="roundActive"><option value="true">Active</option><option value="false">Inactive</option></select></div>
+<div class="field"><label for="roundNotes">Notes (optional)</label><input class="input" id="roundNotes" placeholder="Optional"></div>
+</div>
+<div class="actions"><button class="btn" id="saveRound">Save round</button><button class="btn secondary" id="newRound">New round</button></div>
+<div class="divider"></div><div class="tablewrap"><table><thead><tr><th>Round</th><th>Title</th><th>Status</th><th>Actions</th></tr></thead><tbody id="roundRows"></tbody></table></div>
+</section>
+
+<section class="panel">
+<h2>Round days & Spotify playlist</h2>
+<input id="dayId" type="hidden">
+<div class="grid">
+<div class="field"><label for="dayRound">Round</label><select id="dayRound"></select></div>
+<div class="field"><label for="dayNumber">Day number (1 or 2)</label><select id="dayNumber"><option value="1">Day 1</option><option value="2">Day 2</option></select></div>
+</div>
+<div class="grid">
+<div class="field"><label for="eventDate">Event date</label><input class="input" id="eventDate" type="date"></div>
+<div class="field"><label for="dayOpen">Check-in status</label><select id="dayOpen"><option value="true">Open</option><option value="false">Closed</option></select></div>
+</div>
+<div class="field"><label for="playlistTitle">Playlist title</label><input class="input" id="playlistTitle" value="Spotify streaming for Insomnia"></div>
+<div class="field"><label for="playlistUrl">Spotify playlist URL</label><input class="input" id="playlistUrl" type="url" value="https://open.spotify.com/playlist/1VLc055dp3O5k3UMdzHiIK"></div>
+<div class="actions"><button class="btn" id="saveDay">Save day</button><button class="btn secondary" id="newDay">New day</button></div>
+<div class="divider"></div><div class="tablewrap"><table><thead><tr><th>Round</th><th>Day</th><th>Date</th><th>Playlist</th><th>Status</th><th>Actions</th></tr></thead><tbody id="dayRows"></tbody></table></div>
+</section>
+
+<section class="panel">
+<h2>Cards</h2>
+<input id="cardId" type="hidden">
+<div class="grid">
+<div class="field"><label for="cardRound">Round</label><select id="cardRound"></select></div>
+<div class="field"><label for="cardCategory">Category</label><select id="cardCategory"><option>LOVE</option><option>MONEY</option><option>HAPPINESS</option><option>LUCKY</option><option>SUCCESS</option><option>SOULMATE</option></select></div>
+</div>
+<div class="grid">
+<div class="field"><label for="cardName">Card name</label><input class="input" id="cardName" placeholder="LOVE 01"></div>
+<div class="field"><label for="cardNumber">Card number (optional)</label><input class="input" id="cardNumber" type="number" min="1" placeholder="1"></div>
+</div>
+<div class="field"><label for="fortune">Fortune text</label><textarea id="fortune" placeholder="ข้อความทำนาย"></textarea></div>
+<div class="grid">
+<div class="field"><label for="frontImage">Front image</label><input class="input file" id="frontImage" type="file" accept="image/png,image/jpeg,image/webp"></div>
+<div class="field"><label for="backImage">Back image</label><input class="input file" id="backImage" type="file" accept="image/png,image/jpeg,image/webp"></div>
+</div>
+<p class="notice">อัปโหลดรูปไปยัง Supabase Storage bucket ชื่อ <code>fortune-cards</code> (ตั้งเป็น public read) แล้วบันทึก URL ลงตาราง cards</p>
+<div class="actions"><button class="btn" id="saveCard">Save card</button><button class="btn secondary" id="newCard">New card</button></div>
+<div class="divider"></div><div class="tablewrap"><table><thead><tr><th>Front</th><th>Card</th><th>Category</th><th>Round</th><th>Actions</th></tr></thead><tbody id="cardRows"></tbody></table></div>
+</section>
+
+<section class="panel">
+<h2>Check-in history</h2>
+<div class="grid">
+<div class="field"><label for="searchAccount">Search username</label><input class="input" id="searchAccount" placeholder="X / Twitter username"></div>
+<div class="field" style="align-self:end"><button class="btn secondary" id="refreshCheckins">Refresh history</button></div>
+</div>
+<div class="tablewrap"><table><thead><tr><th>Username</th><th>Round day</th><th>Checked in</th><th>Status</th></tr></thead><tbody id="checkinRows"></tbody></table></div>
+</section>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ใส่ค่า Supabase Project URL และ anon/public key ให้ตรงกับ index.html */
+const SUPABASE_URL = "YOUR_SUPABASE_URL";
+const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+const TABLES = {rounds:"rounds",days:"round_days",cards:"cards",checkins:"checkins",userCards:"user_cards",profiles:"admin_users"};
+const BUCKET = "fortune-cards";
+const ready = SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("YOUR_SUPABASE") && SUPABASE_ANON_KEY.length>20 && !SUPABASE_ANON_KEY.includes("YOUR_SUPABASE");
+const sb = ready ? window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY) : null;
+const $=id=>document.getElementById(id); let rounds=[],days=[],cards=[];
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function status(id,msg,type="info"){const e=$(id);e.textContent=msg;e.className=`status show ${type}`;}
+async function isAdmin(){
+ const {data:{user}}=await sb.auth.getUser(); if(!user)return false;
+ const {data,error}=await sb.from(TABLES.profiles).select("user_id").eq("user_id",user.id).maybeSingle();
+ return !error&&!!data;
+}
+async function enter(){
+ if(!sb){status("loginStatus","ใส่ Supabase URL และ anon key ในไฟล์ admin.html ก่อน","error");return;}
+ const ok=await isAdmin();
+ if(!ok){status("loginStatus","บัญชีนี้ไม่มีสิทธิ์ Admin หรือยังไม่ได้เพิ่มในตาราง admin_users","error");return;}
+ $("loginPanel").classList.add("hidden");$("adminApp").classList.remove("hidden");await refreshAll();
+}
+$("loginBtn").addEventListener("click",async()=>{
+ try{const {error}=await sb?.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});if(error)throw error;await enter();}
+ catch(e){status("loginStatus",e.message||"เข้าสู่ระบบไม่สำเร็จ","error");}
+});
+$("password").addEventListener("keydown",e=>{if(e.key==="Enter")$("loginBtn").click();});
+$("logoutBtn").addEventListener("click",async()=>{await sb.auth.signOut();location.reload();});
+function fillSelect(id,items,selected){$(id).innerHTML=items.map((r,i)=>`<option value="${esc(r.id)}" ${String(r.id)===String(selected)?"selected":""}>Round ${esc(r.round_number??i+1)}${r.title?" · "+esc(r.title):""}</option>`).join("");}
+async function refreshAll(){
+ try{
+  const [r,d,c]=await Promise.all([sb.from(TABLES.rounds).select("*").order("round_number"),sb.from(TABLES.days).select("*").order("event_date"),sb.from(TABLES.cards).select("*").order("category")]);
+  if(r.error)throw r.error;if(d.error)throw d.error;if(c.error)throw c.error;
+  rounds=r.data||[];days=d.data||[];cards=c.data||[];
+  renderRounds();renderDays();renderCards();fillSelect("dayRound",rounds);fillSelect("cardRound",rounds);
+  $("statRounds").textContent=rounds.length;
+  const today=new Date().toLocaleDateString("en-CA");
+  const [{data:allRows,error:e1},{data:todayRows,error:e2}]=await Promise.all([
+   sb.from(TABLES.checkins).select("username"),
+   sb.from(TABLES.checkins).select("username").eq("checkin_date",today)
+  ]);
+  const uniqueAll=new Set((allRows||[]).map(x=>String(x.username||"").toLowerCase()).filter(Boolean)).size;
+  const uniqueToday=new Set((todayRows||[]).map(x=>String(x.username||"").toLowerCase()).filter(Boolean)).size;
+  $("statAll").textContent=e1?"—":uniqueAll.toLocaleString();$("statToday").textContent=e2?"—":uniqueToday.toLocaleString();
+  await refreshCheckins();
+ }catch(e){status("mainStatus",e.message||"โหลดข้อมูลไม่สำเร็จ","error");}
+}
+function renderRounds(){
+ $("roundRows").innerHTML=rounds.map((r,i)=>`<tr><td>Round ${esc(r.round_number??i+1)}</td><td>${esc(r.title||"")}</td><td>${r.is_active?'<span class="pill">Active</span>':'<span class="pill">Inactive</span>'}</td><td><div class="actions"><button class="btn secondary" onclick="editRound('${esc(r.id)}')">Edit</button><button class="btn danger" onclick="deleteRow('rounds','${esc(r.id)}')">Delete</button></div></td></tr>`).join("")||'<tr><td colspan="4" class="empty">No rounds yet</td></tr>';
+}
+function renderDays(){
+ $("dayRows").innerHTML=days.map(d=>{const r=rounds.find(x=>String(x.id)===String(d.round_id));return `<tr><td>${esc(r?.round_number||"—")}</td><td>Day ${esc(d.day_number)}</td><td>${esc(d.event_date||"")}</td><td>${esc(d.playlist_title||"")}<br><a href="${esc(d.playlist_url||"#")}" target="_blank" rel="noopener">Open playlist ↗</a></td><td>${d.is_open?'<span class="pill">Open</span>':'<span class="pill">Closed</span>'}</td><td><div class="actions"><button class="btn secondary" onclick="editDay('${esc(d.id)}')">Edit</button><button class="btn danger" onclick="deleteRow('round_days','${esc(d.id)}')">Delete</button></div></td></tr>`}).join("")||'<tr><td colspan="6" class="empty">No event days yet</td></tr>';
+}
+function renderCards(){
+ $("cardRows").innerHTML=cards.map(c=>{const r=rounds.find(x=>String(x.id)===String(c.round_id));const src=c.front_image_url||c.front_image||"";return `<tr><td>${src?`<img src="${esc(src)}" alt="">`:"—"}</td><td>${esc(c.card_name||c.name||"")}</td><td>${esc(c.category||"")}</td><td>${esc(r?.round_number||"—")}</td><td><div class="actions"><button class="btn secondary" onclick="editCard('${esc(c.id)}')">Edit</button><button class="btn danger" onclick="deleteRow('cards','${esc(c.id)}')">Delete</button></div></td></tr>`}).join("")||'<tr><td colspan="5" class="empty">No cards yet</td></tr>';
+}
+$("saveRound").addEventListener("click",async()=>{
+ try{const id=$("roundId").value;const row={round_number:Number($("roundNumber").value),title:$("roundName").value.trim(),is_active:$("roundActive").value==="true",notes:$("roundNotes").value.trim()};if(!row.round_number)throw Error("กรอก Round number");const q=id?sb.from(TABLES.rounds).update(row).eq("id",id):sb.from(TABLES.rounds).insert(row);const {error}=await q;if(error)throw error;status("mainStatus","บันทึก Round แล้ว","ok");resetRound();await refreshAll();}catch(e){status("mainStatus",e.message,"error");}
+});
+$("newRound").addEventListener("click",resetRound);
+function resetRound(){$("roundId").value="";$("roundNumber").value=rounds.length+1;$("roundName").value="";$("roundActive").value="true";$("roundNotes").value="";}
+window.editRound=id=>{const r=rounds.find(x=>String(x.id)===String(id));if(!r)return;$("roundId").value=r.id;$("roundNumber").value=r.round_number;$("roundName").value=r.title||"";$("roundActive").value=String(!!r.is_active);$("roundNotes").value=r.notes||"";window.scrollTo({top:0,behavior:"smooth"});};
+$("saveDay").addEventListener("click",async()=>{
+ try{const id=$("dayId").value;const row={round_id:$("dayRound").value,day_number:Number($("dayNumber").value),event_date:$("eventDate").value,playlist_title:$("playlistTitle").value.trim(),playlist_url:$("playlistUrl").value.trim(),is_open:$("dayOpen").value==="true"};if(!row.round_id||!row.event_date||!row.playlist_url)throw Error("กรอก Round, วันที่ และ Playlist URL ให้ครบ");const q=id?sb.from(TABLES.days).update(row).eq("id",id):sb.from(TABLES.days).insert(row);const {error}=await q;if(error)throw error;status("mainStatus","บันทึกวันกิจกรรมแล้ว","ok");resetDay();await refreshAll();}catch(e){status("mainStatus",e.message,"error");}
+});
+$("newDay").addEventListener("click",resetDay);
+function resetDay(){$("dayId").value="";$("dayNumber").value="1";$("eventDate").value="";$("playlistTitle").value="Spotify streaming for Insomnia";$("playlistUrl").value="https://open.spotify.com/playlist/1VLc055dp3O5k3UMdzHiIK";$("dayOpen").value="true";}
+window.editDay=id=>{const d=days.find(x=>String(x.id)===String(id));if(!d)return;$("dayId").value=d.id;$("dayRound").value=d.round_id;$("dayNumber").value=d.day_number;$("eventDate").value=d.event_date;$("playlistTitle").value=d.playlist_title||"";$("playlistUrl").value=d.playlist_url||"";$("dayOpen").value=String(!!d.is_open);};
+async function uploadImage(file,folder){
+ if(!file)return null;if(file.size>8*1024*1024)throw Error("รูปต้องไม่เกิน 8 MB");
+ const ext=(file.name.split(".").pop()||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"");const path=`${folder}/${crypto.randomUUID()}.${ext}`;
+ const {error}=await sb.storage.from(BUCKET).upload(path,file,{upsert:false,contentType:file.type});if(error)throw error;
+ const {data}=sb.storage.from(BUCKET).getPublicUrl(path);return data.publicUrl;
+}
+$("saveCard").addEventListener("click",async()=>{
+ try{const id=$("cardId").value;const old=cards.find(c=>String(c.id)===String(id));const front=await uploadImage($("frontImage").files[0],"front");const back=await uploadImage($("backImage").files[0],"back");
+ const row={round_id:$("cardRound").value,category:$("cardCategory").value,card_name:$("cardName").value.trim(),card_number:$("cardNumber").value?Number($("cardNumber").value):null,fortune_text:$("fortune").value.trim(),front_image_url:front||old?.front_image_url||old?.front_image||null,back_image_url:back||old?.back_image_url||old?.back_image||null};
+ if(!row.round_id||!row.card_name)throw Error("เลือก Round และกรอกชื่อการ์ด");const q=id?sb.from(TABLES.cards).update(row).eq("id",id):sb.from(TABLES.cards).insert(row);const {error}=await q;if(error)throw error;status("mainStatus","บันทึกการ์ดแล้ว","ok");resetCard();await refreshAll();}catch(e){status("mainStatus",e.message||"บันทึกการ์ดไม่สำเร็จ","error");}
+});
+$("newCard").addEventListener("click",resetCard);
+function resetCard(){$("cardId").value="";$("cardName").value="";$("cardNumber").value="";$("fortune").value="";$("frontImage").value="";$("backImage").value="";}
+window.editCard=id=>{const c=cards.find(x=>String(x.id)===String(id));if(!c)return;$("cardId").value=c.id;$("cardRound").value=c.round_id;$("cardCategory").value=c.category;$("cardName").value=c.card_name||c.name||"";$("cardNumber").value=c.card_number||"";$("fortune").value=c.fortune_text||c.fortune||"";$("frontImage").value="";$("backImage").value="";};
+window.deleteRow=async(table,id)=>{if(!confirm("ยืนยันลบรายการนี้?"))return;try{const {error}=await sb.from(table).delete().eq("id",id);if(error)throw error;status("mainStatus","ลบรายการแล้ว","ok");await refreshAll();}catch(e){status("mainStatus",e.message,"error");}};
+$("refreshCheckins").addEventListener("click",refreshCheckins);
+async function refreshCheckins(){
+ if(!sb)return;try{let q=sb.from(TABLES.checkins).select("*").order("created_at",{ascending:false}).limit(100);const term=$("searchAccount").value.trim().replace(/^@/,"");if(term)q=q.ilike("username",`%${term}%`);const {data,error}=await q;if(error)throw error;$("checkinRows").innerHTML=(data||[]).map(c=>{const d=days.find(x=>String(x.id)===String(c.round_day_id));return `<tr><td>@${esc(c.username)}</td><td>${d?`Day ${esc(d.day_number)} · ${esc(d.event_date)}`:esc(c.round_day_id||"—")}</td><td>${esc(c.created_at?new Date(c.created_at).toLocaleString():"")}</td><td><span class="pill">${esc(c.status||"accepted")}</span></td></tr>`}).join("")||'<tr><td colspan="4" class="empty">No check-ins found</td></tr>';}catch(e){status("mainStatus",e.message,"error");}
+}
+(async()=>{if(ready){const {data:{session}}=await sb.auth.getSession();if(session)await enter();}})();
+</script></body></html>
