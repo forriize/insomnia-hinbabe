@@ -87,6 +87,16 @@ input[type=file]{display:none}
 @media (min-width:681px) and (max-width:1050px){.layout{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}.left-panel{grid-column:1;grid-row:1}.collection-panel{grid-column:2;grid-row:1;align-self:start;height:fit-content}.center-panel{grid-column:1/-1;grid-row:2;min-height:360px}.deck{min-height:190px}}
 @media(max-width:680px){body{background:#06224a}body:before{position:fixed;background:linear-gradient(180deg,rgba(3,16,43,.12),rgba(3,16,43,.42)),url("./ocean-background.png") center center/cover no-repeat;background-attachment:scroll}.shell{padding:12px 12px 16px}.hero{padding:22px 5px 20px}h1{font-size:clamp(38px,11vw,58px)}.stats{gap:7px;margin-bottom:16px}.stat{padding:10px 5px;gap:5px;min-height:76px;flex-direction:column;text-align:center;border-radius:13px}.stat-icon{font-size:20px}.stat-num{font-size:21px}.stat-label{font-size:10px}.layout{grid-template-columns:1fr;gap:13px}.left-panel,.center-panel,.collection-panel{grid-column:auto;grid-row:auto}.center-panel{min-height:350px;order:2}.collection-panel{order:3}.left-panel{order:1}.panel{padding:19px;border-radius:19px}.section-title{font-size:23px}.upload-icon{width:54px;height:54px}.flip-area{grid-template-columns:1fr}.big-card{max-width:180px}.modal-card{padding:16px}.modal-title{font-size:22px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;scroll-behavior:auto!important;transition:none!important}}
+
+.proof-modal{display:none;position:fixed;inset:0;z-index:50;background:#02091bdc;backdrop-filter:blur(7px);align-items:center;justify-content:center;padding:18px}
+.proof-modal.open{display:flex}
+.proof-modal-card{width:min(480px,100%);background:#f2efff;color:#24264b;border:1px solid #c9b8ff;border-radius:20px;padding:22px;box-shadow:0 24px 80px #0008}
+.proof-modal-card h3{font:600 25px "Cormorant Garamond",serif;margin:0 0 8px}
+.proof-modal-card p{font-size:13px;line-height:1.65;color:#59618b}
+.proof-readout{background:#e3e7fb;border-radius:12px;padding:12px;margin:12px 0;font-size:12px;line-height:1.6;overflow-wrap:anywhere}
+.proof-actions{display:flex;gap:9px;margin-top:16px}
+.proof-actions button{flex:1}
+
 </style>
 </head>
 <body>
@@ -135,6 +145,7 @@ input[type=file]{display:none}
               <path d="M32 51V30m0 0-8 8m8-8 8 8" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </span><span class="upload-main" id="uploadMain">แนบภาพหลักฐานการ Save Playlist</span>
+          <span class="upload-sub" id="uploadSub">รองรับภาพ Spotify ที่แคปหรือครอปมาได้</span>
           <img id="proofPreview" class="preview" alt="Proof preview" hidden>
         </label>
         <input id="proofInput" type="file" accept="image/png,image/jpeg,image/webp">
@@ -168,6 +179,26 @@ input[type=file]{display:none}
   <footer class="footer">cattrovertSB</footer>
 </div>
 
+
+<div class="proof-modal" id="proofConfirmModal" role="dialog" aria-modal="true" aria-labelledby="proofConfirmTitle">
+  <div class="proof-modal-card">
+    <h3 id="proofConfirmTitle">Confirm your streaming proof</h3>
+    <p>ระบบอ่านชื่อ Playlist ได้ไม่ชัดเจน กรุณายืนยันว่าได้ Save Playlist #ทีมหินเบ้บ และสตรีมเรียบร้อยแล้ว </p>
+    <div class="proof-readout">
+      <div style="font-size:10px;color:#737ba8;margin-bottom:4px">PLAYLIST</div>
+      <strong id="proofExpectedTitle">—</strong>
+      <div style="font-size:10px;color:#737ba8;margin:10px 0 4px">ข้อความที่ระบบอ่านได้</div>
+      <div id="proofOcrText">ยังอ่านข้อความไม่ได้</div>
+      <div id="proofGreenStatus" style="margin-top:8px;font-weight:600">กำลังตรวจภาพ…</div>
+    </div>
+    <p>Playlist ถูกต้องและ save เรียบร้อย สามารถกดยืนยันเพื่อ Check-in ได้</p>
+    <div class="proof-actions">
+      <button class="btn btn-light" id="proofRetryBtn" type="button">กลับไปตรวจสอบ</button>
+      <button class="btn btn-dark" id="proofConfirmBtn" type="button">ยืนยัน Check-in</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal" id="cardModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
   <div class="modal-card">
     <div class="modal-head"><h2 class="modal-title" id="modalTitle">Your Card</h2><button class="close" id="closeModal" aria-label="Close">×</button></div>
@@ -181,6 +212,7 @@ input[type=file]{display:none}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script>
 /* Supabase Project URL & anon/public key */
 const SUPABASE_URL = "https://zrqiuoxplnhsprpsgkcc.supabase.co";
@@ -287,31 +319,122 @@ $("username").addEventListener("change",loadCollection);
 $("username").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();loadCollection();}});
 $("proofInput").addEventListener("change",e=>{
   proofFile=e.target.files?.[0]||null;
-  if(!proofFile){$("proofPreview").hidden=true;$("uploadMain").textContent="แนบภาพหลักฐานการ Save Playlist";$("uploadSub");return;}
-  if(!["image/jpeg","image/png","image/webp"].includes(proofFile.type)){proofFile=null;e.target.value="";setStatus("checkinStatus","รองรับไฟล์ JPG, PNG หรือ WEBP เท่านั้น","error");return;}
-  if(proofFile.size>10*1024*1024){proofFile=null;e.target.value="";setStatus("checkinStatus","ไฟล์ต้องมีขนาดไม่เกิน 10 MB","error");return;}
-  $("uploadMain").textContent=proofFile.name;$("uploadSub").textContent=`${(proofFile.size/1024/1024).toFixed(2)} MB`;
-  const reader=new FileReader();reader.onload=ev=>{$("proofPreview").src=ev.target.result;$("proofPreview").hidden=false;};reader.readAsDataURL(proofFile);clearStatus("checkinStatus");
+  if(!proofFile){
+    $("proofPreview").hidden=true;
+    $("uploadMain").textContent="แนบภาพหลักฐานการ Save Playlist";
+    $("uploadSub").textContent="แคปหน้าจอ Spotify Playlist ที่กด save เรียบร้อยแล้ว";
+    return;
+  }
+  if(!["image/jpeg","image/png","image/webp"].includes(proofFile.type)){
+    proofFile=null;e.target.value="";
+    setStatus("checkinStatus","รองรับไฟล์ JPG, PNG หรือ WEBP เท่านั้น","error");return;
+  }
+  if(proofFile.size>10*1024*1024){
+    proofFile=null;e.target.value="";
+    setStatus("checkinStatus","ไฟล์ต้องมีขนาดไม่เกิน 10 MB","error");return;
+  }
+  $("uploadMain").textContent=proofFile.name;
+  $("uploadSub").textContent=`${(proofFile.size/1024/1024).toFixed(2)} MB · Spotify screenshot`;
+  const reader=new FileReader();
+  reader.onload=ev=>{$("proofPreview").src=ev.target.result;$("proofPreview").hidden=false;};
+  reader.readAsDataURL(proofFile);clearStatus("checkinStatus");
 });
-$("checkinBtn").addEventListener("click",async()=>{
-  clearStatus("checkinStatus");
-  if(!username()){setStatus("checkinStatus","กรอก X / Twitter account ก่อน","error");$("username").focus();return;}
-  if(!$("eventDay").value){setStatus("checkinStatus","เลือก Event day ก่อน","error");return;}
+
+let pendingProofConfirmation = false;
+function selectedPlaylistTitle(){
+  const opt=$("eventDay").selectedOptions[0];
+  return (opt?.dataset.title || CONFIG.defaultPlaylistTitle || "").trim();
+}
+function normalizeOcrText(value){
+  return String(value||"").toLowerCase()
+    .replace(/https?:\/\/\S+/g," ")
+    .replace(/[^a-z0-9ก-๙]+/g,"")
+    .trim();
+}
+function titleMatchScore(expected, actual){
+  const a=normalizeOcrText(expected), b=normalizeOcrText(actual);
+  if(!a || !b) return 0;
+  if(b.includes(a) || a.includes(b)) return Math.min(a.length,b.length)/Math.max(a.length,b.length);
+  // For long daily titles, use character bigram overlap so minor OCR errors don't block check-in.
+  const grams=s=>new Set(Array.from({length:Math.max(0,s.length-1)},(_,i)=>s.slice(i,i+2)));
+  const ga=grams(a),gb=grams(b);
+  if(!ga.size || !gb.size) return 0;
+  let overlap=0;for(const g of ga)if(gb.has(g))overlap++;
+  return overlap/ga.size;
+}
+async function readProofImage(file){
+  if(!window.Tesseract) throw new Error("OCR library unavailable");
+  const result=await Tesseract.recognize(file,"eng+tha",{
+    logger:m=>{if(m.status==="recognizing text")$("uploadSub").textContent=`กำลังอ่านภาพ ${Math.round((m.progress||0)*100)}%`;}
+  });
+  return (result?.data?.text||"").trim();
+}
+async function detectGreenMark(file){
+  try{
+    const url=URL.createObjectURL(file);
+    const img=await new Promise((resolve,reject)=>{
+      const im=new Image();im.onload=()=>resolve(im);im.onerror=reject;im.src=url;
+    });
+    const canvas=document.createElement("canvas");
+    const scale=Math.min(1,700/Math.max(img.width,img.height));
+    canvas.width=Math.max(1,Math.round(img.width*scale));
+    canvas.height=Math.max(1,Math.round(img.height*scale));
+    const ctx=canvas.getContext("2d",{willReadFrequently:true});
+    ctx.drawImage(img,0,0,canvas.width,canvas.height);
+    URL.revokeObjectURL(url);
+    const {data}=ctx.getImageData(0,0,canvas.width,canvas.height);
+    let green=0;
+    for(let i=0;i<data.length;i+=4){
+      const r=data[i],g=data[i+1],b=data[i+2];
+      if(g>125 && g>r*1.28 && g>b*1.12 && r<100) green++;
+    }
+    return green>Math.max(18,canvas.width*canvas.height*0.00012);
+  }catch(_){return false;}
+}
+function openProofConfirm(expected,ocrText,greenFound){
+  $("proofExpectedTitle").textContent=expected||"Playlist ของวันที่เลือก";
+  $("proofOcrText").textContent=ocrText||"ระบบอ่านข้อความจากภาพไม่ได้";
+  $("proofGreenStatus").textContent=greenFound
+    ?"✓ พบสีเขียวในภาพ (ใช้เป็นข้อมูลประกอบ)"
+    :"ไม่พบเครื่องหมายสีเขียวชัดเจน — กรุณาตรวจสอบด้วยตนเอง";
+  $("proofConfirmModal").classList.add("open");
+}
+function closeProofConfirm(){
+  $("proofConfirmModal").classList.remove("open");
+}
+$("proofRetryBtn").addEventListener("click",closeProofConfirm);
+$("proofConfirmBtn").addEventListener("click",async()=>{
+  pendingProofConfirmation=true;
+  closeProofConfirm();
+  await submitCheckin();
+});
+async function submitCheckin(){
   if(!proofFile){setStatus("checkinStatus","แนบภาพหลักฐานก่อน Check-in","error");return;}
-  if(!sb){setStatus("checkinStatus","เติม Supabase URL และ anon key ก่อนใช้งาน","error");return;}
   setLoading(true);
-  try {
-    const fd=new FormData();fd.append("username",username());fd.append("round_day_id",$("eventDay").value);fd.append("proof",proofFile,proofFile.name);
-    const response=await fetch(`${SUPABASE_URL}/functions/v1/${CONFIG.checkinFunction}`,{method:"POST",headers:{apikey:SUPABASE_ANON_KEY,},body:fd});
+  try{
+    const fd=new FormData();
+    fd.append("username",username());
+    fd.append("round_day_id",$("eventDay").value);
+    fd.append("proof",proofFile,proofFile.name);
+    fd.append("manual_confirmed",pendingProofConfirmation?"true":"false");
+    const response=await fetch(`${SUPABASE_URL}/functions/v1/${CONFIG.checkinFunction}`,{
+      method:"POST",
+      headers:{apikey:SUPABASE_ANON_KEY},
+      body:fd
+    });
     const result=await response.json().catch(()=>({}));
     if(!response.ok || result.error) throw new Error(result.error||result.message||"ตรวจสอบหลักฐานไม่สำเร็จ");
     setStatus("checkinStatus",result.message||"Check-in สำเร็จ! ได้รับการ์ด 2 ใบแล้ว","ok");
-    if(result.cards?.length) { activeCard=result.cards[0]; showDrawResult(result.cards); }
-    $("proofInput").value="";proofFile=null;$("proofPreview").hidden=true;$("uploadMain").textContent="แนบภาพหลักฐานการ Save Playlist";
+    if(result.cards?.length){activeCard=result.cards[0];showDrawResult(result.cards);}
+    $("proofInput").value="";proofFile=null;pendingProofConfirmation=false;
+    $("proofPreview").hidden=true;
+    $("uploadMain").textContent="แนบภาพหลักฐานการ Save Playlist";
+    $("uploadSub").textContent="รองรับภาพ Spotify ที่แคปหรือครอปมาได้";
     await loadCollection();await loadStats();
-  } catch(e) {setStatus("checkinStatus",e.message||"เกิดข้อผิดพลาด กรุณาลองใหม่","error");}
-  finally {setLoading(false);}
-});
+  }catch(e){
+    setStatus("checkinStatus",e.message||"เกิดข้อผิดพลาด กรุณาลองใหม่","error");
+  }finally{setLoading(false);}
+}
 function showDrawResult(cards) {
   if(!cards?.length)return;
   const card=cards[0];openCard(card.id||card.card_id,card);
@@ -337,7 +460,7 @@ $("flipBtn").addEventListener("click",()=>{modalSide=modalSide==="front"?"back":
 function closeModal(){$("cardModal").classList.remove("open");document.body.style.overflow="";}
 $("closeModal").addEventListener("click",closeModal);$("closeModal2").addEventListener("click",closeModal);
 $("cardModal").addEventListener("click",e=>{if(e.target===$("cardModal"))closeModal();});
-document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();closeProofConfirm();}});
 $("viewCollectionBtn").addEventListener("click",()=>{document.querySelector(".collection-panel").scrollIntoView({behavior:"smooth",block:"start"});if(username())loadCollection();else $("username").focus();});
 
 function loadImage(src) {
