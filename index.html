@@ -26,7 +26,7 @@ h1{font-family:"Cormorant Garamond",serif;font-family:"Cinzel Decorative",serif;
 .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;max-width:620px;margin:0 auto 26px}
 .stat{background:linear-gradient(135deg,rgba(160,222,255,.13),rgba(92,163,222,.07));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(184,231,255,.38);border-radius:18px;padding:14px 18px;display:flex;align-items:center;justify-content:center;gap:13px;box-shadow:0 8px 24px #00132730,inset 0 1px 0 rgba(255,255,255,.14);min-height:82px}
 .stat-icon{font-size:28px;color:#c7efff;flex:0 0 auto}.stat-num{font-family:"Cormorant Garamond",serif;font-size:30px;font-weight:700;line-height:1.1;color:#f2f9ff;text-shadow:0 1px 10px #4dbdff55}.stat-label{font-size:12px;color:#c7eaff;margin-top:4px}
-.layout{display:grid;grid-template-columns:minmax(270px,1fr) minmax(260px,.92fr) minmax(300px,1.08fr);gap:18px;align-items:stretch}
+.layout{display:grid;grid-template-columns:minmax(270px,.9fr) minmax(300px,1.1fr);gap:18px;align-items:start}
 .panel{background:linear-gradient(145deg,rgba(11,35,70,.88),rgba(14,54,91,.82));color:#eaf6ff;border:1px solid #6ecbff;border-radius:23px;padding:clamp(18px,2vw,27px);box-shadow:var(--shadow);min-width:0}
 .section-title{font-family:"Cormorant Garamond",serif;font-size:25px;margin:0 0 17px;display:flex;align-items:center;gap:10px;font-weight:600}
 .section-title .icon{font-family:serif;color:#817ec0;font-size:24px}
@@ -47,15 +47,6 @@ label{display:block;font-size:14px;font-weight:600;margin:0 0 9px}
 input[type=file]{display:none}
 .notice{font-size:12px;line-height:1.5;color:#b6dff7;margin:10px 0 16px}
 .status{display:none;padding:11px 13px;border-radius:12px;font-size:13px;margin-top:12px;line-height:1.45}.status.show{display:block}.status.error{background:#f8dce5;color:#812f2a}.status.ok{background:#d6f5ff;color:#294f35}.status.info{background:#d8efff;color:#6c573b}
-.center-panel{display:flex;flex-direction:column;justify-content:center;text-align:center;background:linear-gradient(160deg,rgba(15,42,83,.80),rgba(18,64,105,.72));position:relative;overflow:hidden}
-.center-panel:before{content:"";position:absolute;inset:10px;border:1px solid #5aaee0;border-radius:17px;pointer-events:none}
-.moon{font-size:26px;color:#b39159;letter-spacing:9px;margin-bottom:10px}.center-title{font-family:"Cormorant Garamond",serif;font-size:27px;margin:0 0 18px}
-.deck{display:flex;justify-content:center;align-items:center;min-height:230px;position:relative;margin:2px 0 12px}
-.tarot{width:clamp(100px,10vw,145px);aspect-ratio:2/3;border:1px solid #817ec0;border-radius:13px;padding:7px;background:#f4e5ce;box-shadow:0 8px 18px #392b1d35;position:relative}
-.tarot:first-child{transform:rotate(-10deg) translateX(12px);z-index:2}.tarot:last-child{transform:rotate(9deg) translateX(-7px);margin-top:13px}
-.tarot-inner{height:100%;border:1px solid #5aaee0;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-direction:column;background:radial-gradient(circle,#7c75bc 0,#202d65 72%);color:#e7ddff;overflow:hidden}
-.tarot-inner:before{content:"";position:absolute;inset:15px;border:1px solid #c9b8ff;border-radius:5px}
-.tarot-sigil{font-size:46px;line-height:1}.tarot-stars{font-size:12px;letter-spacing:5px;margin-top:14px}
 .center-note{font-size:13px;color:#b6dff7;margin:7px 0 17px}
 .collection-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:15px}
 .collection-head .section-title{margin:0}
@@ -64,7 +55,7 @@ input[type=file]{display:none}
 .day-block{padding:16px 0;border-bottom:1px solid rgba(151,210,255,.22)}.day-block:first-child{padding-top:4px}.day-block:last-child{border-bottom:0}
 .day-heading{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;padding:10px 14px;border-radius:10px;background:linear-gradient(100deg,rgba(84,158,220,.22),rgba(36,83,142,.18));border:1px solid rgba(151,210,255,.24)}.day-name{font-weight:700;font-size:15px;color:#eaf6ff;letter-spacing:.04em}.day-date{font-size:11px;color:#a9d8f6}
 .mini-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
-.mini-card{background:linear-gradient(155deg,rgba(35,83,137,.82),rgba(7,28,66,.94));border-radius:13px;padding:9px;text-align:center;cursor:pointer;border:1px solid rgba(139,205,250,.48);box-shadow:0 8px 24px rgba(0,8,28,.18);transition:.2s}.mini-card:hover{transform:translateY(-3px);box-shadow:0 7px 15px #4a36221a}
+.mini-card{background:linear-gradient(145deg,rgba(151,213,255,.13),rgba(12,48,91,.24));backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:15px;padding:9px;text-align:center;cursor:pointer;border:1px solid rgba(170,225,255,.42);box-shadow:0 8px 24px rgba(0,8,28,.18),inset 0 1px 0 rgba(255,255,255,.14);transition:.2s}.mini-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(66,166,255,.2),inset 0 1px 0 rgba(255,255,255,.2)}
 .card-art{aspect-ratio:3/4;border-radius:8px;padding:5px;border:1px solid rgba(173,224,255,.78);background:linear-gradient(145deg,#367db2,#102e63);display:flex;align-items:center;justify-content:center;overflow:hidden}
 .card-art .ornament{width:100%;height:100%;border:1px solid rgba(197,235,255,.75);border-radius:5px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:#eaf7ff;background:linear-gradient(145deg,#56b6e8,#173d79)}
 .card-art .symbol{font-size:35px}.card-art .card-word{font-size:9px;letter-spacing:2px}
@@ -74,7 +65,7 @@ input[type=file]{display:none}
 .mini-card[data-category="HAPPINESS"] .card-art{background:#2d7799}.mini-card[data-category="HAPPINESS"] .ornament{background:linear-gradient(145deg,#91d9ef,#397e9d)}
 .mini-card[data-category="SOULMATE"] .card-art{background:#496ba9}.mini-card[data-category="SOULMATE"] .ornament{background:linear-gradient(145deg,#a7dfff,#526ba6)}
 .mini-card[data-category="LOVE"] .card-art{background:#3d629f}
-.mini-label{font-size:10px;font-weight:700;margin-top:7px;letter-spacing:.04em}.mini-rarity{font-size:9px;color:#9b8264;margin-top:3px}
+.mini-label{font-size:10px;font-weight:700;margin-top:7px;letter-spacing:.04em}.mini-rarity{font-size:9px;color:#a9d8f6;margin-top:3px}
 .empty{padding:30px 12px;text-align:center;color:#b6dff7;font-size:13px}
 .download{margin-top:12px}
 .footer{text-align:center;color:#a9e4ff;font-family:"Cormorant Garamond",serif;font-size:17px;letter-spacing:.08em;padding:30px 0 7px}
@@ -84,8 +75,8 @@ input[type=file]{display:none}
 .flip-area{display:grid;grid-template-columns:minmax(130px,.8fr) minmax(0,1.2fr);gap:22px;align-items:start}.big-card{width:100%;max-width:250px;margin:auto;aspect-ratio:2/3;border-radius:14px;border:1px solid #b99b6d;background:#d8efff;padding:9px}.big-card-inner{width:100%;height:100%;border-radius:8px;background:linear-gradient(145deg,#78d8ff,#315a9a);border:1px solid #fff0d8;display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff1d6;gap:14px}.big-card-inner .symbol{font-size:66px}.big-card-inner .card-word{letter-spacing:4px;font-size:12px}
 .fortune-copy{font-size:15px;line-height:1.8;white-space:pre-wrap}.fortune-label{font-size:11px;color:#967b58;letter-spacing:.15em;margin-bottom:8px}.modal-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:17px}
 .loading{display:none;align-items:center;justify-content:center;gap:9px;color:#e9d6b4;font-size:13px;margin:10px}.loading.show{display:flex}.spinner{width:15px;height:15px;border:2px solid #ffffff50;border-top-color:#f4d9a1;border-radius:50%;animation:spin .7s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
-@media (min-width:681px) and (max-width:1050px){.layout{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}.left-panel{grid-column:1;grid-row:1}.collection-panel{grid-column:2;grid-row:1;align-self:start;height:fit-content}.center-panel{grid-column:1/-1;grid-row:2;min-height:360px}.deck{min-height:190px}}
-@media(max-width:680px){body{background:#06224a}body:before{position:fixed;background:linear-gradient(180deg,rgba(3,16,43,.12),rgba(3,16,43,.42)),url("./ocean-background.png") center center/cover no-repeat;background-attachment:scroll}.shell{padding:12px 12px 16px}.hero{padding:22px 5px 20px}h1{font-size:clamp(38px,11vw,58px)}.stats{gap:7px;margin-bottom:16px}.stat{padding:10px 5px;gap:5px;min-height:76px;flex-direction:column;text-align:center;border-radius:13px}.stat-icon{font-size:20px}.stat-num{font-size:21px}.stat-label{font-size:10px}.layout{grid-template-columns:1fr;gap:13px}.left-panel,.center-panel,.collection-panel{grid-column:auto;grid-row:auto}.center-panel{min-height:350px;order:2}.collection-panel{order:3}.left-panel{order:1}.panel{padding:19px;border-radius:19px}.section-title{font-size:23px}.upload-icon{width:54px;height:54px}.flip-area{grid-template-columns:1fr}.big-card{max-width:180px}.modal-card{padding:16px}.modal-title{font-size:22px}}
+@media (min-width:681px) and (max-width:1050px){.layout{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}.left-panel{grid-column:1;grid-row:1}.collection-panel{grid-column:2;grid-row:1;align-self:start;height:fit-content}}
+@media(max-width:680px){body{background:#06224a}body:before{position:fixed;background:linear-gradient(180deg,rgba(3,16,43,.12),rgba(3,16,43,.42)),url("./ocean-background.png") center center/cover no-repeat;background-attachment:scroll}.shell{padding:12px 12px 16px}.hero{padding:22px 5px 20px}h1{font-size:clamp(38px,11vw,58px)}.stats{gap:7px;margin-bottom:16px}.stat{padding:10px 5px;gap:5px;min-height:76px;flex-direction:column;text-align:center;border-radius:13px}.stat-icon{font-size:20px}.stat-num{font-size:21px}.stat-label{font-size:10px}.layout{grid-template-columns:1fr;gap:13px}.left-panel,.collection-panel{grid-column:auto;grid-row:auto}.collection-panel{order:2}.left-panel{order:1}.panel{padding:19px;border-radius:19px}.section-title{font-size:23px}.upload-icon{width:54px;height:54px}.flip-area{grid-template-columns:1fr}.big-card{max-width:180px}.modal-card{padding:16px}.modal-title{font-size:22px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;scroll-behavior:auto!important;transition:none!important}}
 
 .proof-modal{display:none;position:fixed;inset:0;z-index:50;background:#02091bdc;backdrop-filter:blur(7px);align-items:center;justify-content:center;padding:18px}
@@ -124,11 +115,9 @@ input[type=file]{display:none}
 .fortune-card-face .big-card-inner{height:100%;width:100%;border-radius:11px;border:1px solid rgba(221,244,255,.8);background:linear-gradient(145deg,#78d8ff,#17366f);background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;gap:12px;overflow:hidden}
 .fortune-card-face .symbol{font-size:66px;text-shadow:0 0 20px #8bdcff}
 .fortune-card-face .card-word{font-size:12px;letter-spacing:3px;text-shadow:0 2px 8px #001b4c}
-.fortune-card-back{transform:rotateY(180deg);background:linear-gradient(145deg,rgba(25,91,151,.98),rgba(8,30,75,.98));}
-.fortune-back-content{height:100%;border:1px solid rgba(177,226,255,.55);border-radius:10px;padding:20px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 15%,rgba(117,204,255,.24),transparent 45%),linear-gradient(160deg,#174b85,#091d4d)}
-.fortune-back-content .fortune-label{color:#9edaff;font-size:11px;letter-spacing:.18em}
-.fortune-copy{color:#f0f8ff;font-size:clamp(13px,1.6vw,17px);line-height:1.85;white-space:pre-wrap;overflow:auto;max-height:65%;text-align:center}
-.fortune-back-star{color:#a9e0ff;font-size:22px;margin:7px}
+.fortune-card-back{transform:rotateY(180deg);background:#061b3d;position:absolute;padding:7px}
+.fortune-card-back-image{position:absolute;inset:7px;width:calc(100% - 14px);height:calc(100% - 14px);object-fit:contain;display:block;border-radius:10px;z-index:0;background:#061b3d}
+.fortune-card-back-image[hidden]{display:none}
 .fortune-arrow{flex:0 0 48px;width:48px;height:48px;border-radius:50%;border:1px solid rgba(151,219,255,.75);background:rgba(91,174,237,.16);color:#eaf7ff;font-size:34px;line-height:1;display:grid;place-items:center}
 .fortune-arrow:disabled{opacity:.25;cursor:default}
 .fortune-card-count{color:#cdeaff;font-family:"Cormorant Garamond",serif;font-size:19px;margin-top:4px}
@@ -204,17 +193,6 @@ input[type=file]{display:none}
       <div class="status" id="checkinStatus" role="status" aria-live="polite"></div>
     </section>
 
-    <section class="panel center-panel">
-      <div class="moon">✦ ☾ ✧</div>
-      <h2 class="center-title">Your Fortune</h2>
-      <div class="deck" aria-hidden="true">
-        <div class="tarot"><div class="tarot-inner"><div class="tarot-sigil">☾</div><div class="tarot-stars">✦ · ✧</div></div></div>
-        <div class="tarot"><div class="tarot-inner"><div class="tarot-sigil">✿</div><div class="tarot-stars">✧ · ✦</div></div></div>
-      </div>
-      <p class="center-note"></p>
-      <button class="btn btn-dark" id="openCollectionBtn" type="button">View My Collection</button>
-    </section>
-
     <section class="panel collection-panel">
       <div class="collection-head">
         <h2 class="section-title">My Collection</h2>
@@ -268,12 +246,7 @@ input[type=file]{display:none}
             </div>
           </div>
           <div class="fortune-card-face fortune-card-back">
-            <div class="fortune-back-content">
-              <div class="fortune-back-star">✦</div>
-              <div class="fortune-label" id="modalCategory">CARD FORTUNE</div>
-              <div class="fortune-copy" id="modalFortune"></div>
-              <div class="fortune-back-star">✦</div>
-            </div>
+            <img id="modalCardBackImage" class="fortune-card-back-image" alt="ภาพด้านหลังของการ์ด" hidden>
           </div>
         </div>
       </div>
@@ -358,7 +331,7 @@ async function loadSetup() {
     if(r.error) throw r.error; if(d.error) throw d.error;
     rounds=r.data||[]; days=d.data||[];
     if(!CONFIG.currentRoundId && rounds.length) CONFIG.currentRoundId=rounds.find(x=>x.is_active)?.id || rounds[0].id;
-    $("roundSelect").innerHTML=rounds.map((x,i)=>`<option value="${esc(x.id)}" ${String(x.id)===String(CONFIG.currentRoundId)?"selected":""}>Round ${esc(x.round_number ?? i+1)}</option>`).join("") || '<option value="">Round</option>';
+    $("roundSelect").innerHTML=rounds.map((x,i)=>`<option value="${esc(x.id)}" ${String(x.id)===String(CONFIG.currentRoundId)?"selected":""}>${esc(x.title || `Round ${x.round_number ?? i+1}`)}</option>`).join("") || '<option value="">Round</option>';
     const roundDays=days.filter(x=>String(x.round_id)===String($("roundSelect").value || CONFIG.currentRoundId) && (x.is_open !== false));
     $("eventDay").innerHTML='<option value="">เลือกวันที่</option>'+roundDays.map((x,i)=>`<option value="${esc(x.id)}" data-url="${esc(x.playlist_url||"")}" data-title="${esc(x.playlist_title||"Today's Playlist")}" data-date="${esc(x.event_date||"")}">Day ${esc(x.day_number ?? i+1)}${x.event_date?" · "+esc(x.event_date):""}</option>`).join("");
     await loadStats(); await loadCollection();
@@ -436,7 +409,6 @@ function titleMatchScore(expected, actual){
   const a=normalizeOcrText(expected), b=normalizeOcrText(actual);
   if(!a || !b) return 0;
   if(b.includes(a) || a.includes(b)) return Math.min(a.length,b.length)/Math.max(a.length,b.length);
-  // For long daily titles, use character bigram overlap so minor OCR errors don't block check-in.
   const grams=s=>new Set(Array.from({length:Math.max(0,s.length-1)},(_,i)=>s.slice(i,i+2)));
   const ga=grams(a),gb=grams(b);
   if(!ga.size || !gb.size) return 0;
@@ -476,13 +448,11 @@ async function detectGreenMark(file){
 function openProofConfirm(expected,ocrText,greenFound){
   $("proofExpectedTitle").textContent=expected||"Playlist ของวันที่เลือก";
 
-  // Do not display raw OCR output: Spotify screenshots often produce
-  // garbled Thai/English text, which is confusing to users.
-  $("proofOcrText").textContent =
+   $("proofOcrText").textContent =
     "ระบบอ่านชื่อ Playlist จากภาพได้ไม่ชัดเจน กรุณาตรวจสอบภาพและชื่อ Playlist ด้านบน";
 
   $("proofGreenStatus").textContent = greenFound
-    ? "✓ ตรวจพบการ save playlist"
+    ? "✓ ตรวจพบการ Save playlist"
     : "กรุณาตรวจสอบภาพด้วยตนเอง";
 
   $("proofConfirmModal").classList.add("open");
@@ -527,7 +497,6 @@ async function submitCheckin(){
 
 }
 
-// Read the uploaded Spotify screenshot before sending the check-in request.
 $("checkinBtn").addEventListener("click", async () => {
   if (!username()) {
     setStatus("checkinStatus", "กรอก X / Twitter account ก่อน Check-in", "error");
@@ -556,12 +525,10 @@ $("checkinBtn").addEventListener("click", async () => {
     const greenFound = await detectGreenMark(proofFile);
 
     if (score >= 0.45) {
-      // The playlist title looks like a match, so continue without a popup.
-      pendingProofConfirmation = false;
+     pendingProofConfirmation = false;
       clearStatus("checkinStatus");
       await submitCheckin();
     } else {
-      // If OCR is unclear, let the user review and confirm manually.
       pendingProofConfirmation = false;
       clearStatus("checkinStatus");
       openProofConfirm(expected, lastProofOcrText, greenFound);
@@ -614,11 +581,18 @@ function openCard(id, supplied=null) {
 function renderModal() {
   const c=activeCard;if(!c)return;
   const src=cardImage(c,"front");
+  const backSrc=cardImage(c,"back");
+  const backImage=$("modalCardBackImage");
+  if(backSrc){
+    backImage.src=backSrc;
+    backImage.hidden=false;
+  }else{
+    backImage.removeAttribute("src");
+    backImage.hidden=true;
+  }
   const category=categoryThai(c.category);
-  $("modalTitle").textContent=`วันนี้คุณโชคดีในด้าน${category}`;
-  $("modalInstruction").textContent="แตะการ์ดเพื่อรับคำทำนาย";
-  $("modalCategory").textContent=`${String(c.category||"FORTUNE").toUpperCase()}${c.received_date?" · "+dateLabel(c.received_date):""}`;
-  $("modalFortune").textContent=c.fortune_text||c.fortune||"วันนี้เป็นวันที่ดี เปิดใจรับโอกาสและสิ่งดี ๆ ที่กำลังเข้ามา";
+  $("modalTitle").textContent=`วันนี้โชคดีในด้าน${category}`;
+  $("modalInstruction").textContent="แตะการ์ดเพื่อดูคำทำนาย";
   $("modalCardArt").style.backgroundImage=src?`url("${src.replace(/["\\]/g,"")}")`:"";
   $("modalCardArt").style.backgroundSize="cover";
   $("modalCardArt").style.backgroundPosition="center";
@@ -626,7 +600,7 @@ function renderModal() {
   $("drawCardCount").textContent=`${drawCardIndex+1} / ${drawCards.length}`;
   $("prevDrawCard").disabled=drawCardIndex===0;
   $("nextDrawCard").disabled=drawCardIndex===drawCards.length-1;
-  $("fortuneTapHint").textContent=modalSide==="back"?"แตะการ์ดอีกครั้งเพื่อกลับด้านหน้า":"แตะการ์ดเพื่อเปิดคำทำนาย ✦";
+  $("fortuneTapHint").textContent=modalSide==="back"?"แตะการ์ดอีกครั้งเพื่อกลับด้านหน้า":"แตะการ์ดเพื่อดูคำทำนาย ✦";
   $("fortuneFlipCard").classList.toggle("is-flipped",modalSide==="back");
 }
 function flipDrawCard(){
@@ -647,12 +621,14 @@ function closeModal(){$("cardModal").classList.remove("open");document.body.styl
 $("closeModal").addEventListener("click",closeModal);$("closeModal2").addEventListener("click",closeModal);
 $("cardModal").addEventListener("click",e=>{if(e.target===$("cardModal"))closeModal();});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();closeProofConfirm();}});
-function goToCollection(){
-  document.querySelector(".collection-panel").scrollIntoView({behavior:"smooth",block:"start"});
-  if(username())loadCollection();else $("username").focus();
+async function goToCollection(){
+  closeModal();
+  if(username()) await loadCollection();
+  const panel=document.querySelector(".collection-panel");
+  requestAnimationFrame(()=>panel.scrollIntoView({behavior:"smooth",block:"start"}));
+  if(!username()) setTimeout(()=>$("username").focus(),350);
 }
 $("viewCollectionBtn").addEventListener("click",goToCollection);
-$("openCollectionBtn").addEventListener("click",goToCollection);
 
 function loadImage(src) {
   return new Promise(resolve=>{
@@ -677,7 +653,7 @@ async function drawCollectionPNG() {
   const roundNo=round?.round_number ?? Math.max(1,rounds.findIndex(r=>String(r.id)===String(rid))+1);
   const grouped={};cards.forEach(c=>{const day=String(c.day_number||c.day||1);(grouped[day] ||= []).push(c);});
   const dayKeys=Object.keys(grouped).sort((a,b)=>Number(a)-Number(b));
-  const W=1600, pad=72, headerH=260, gap=34, cardW=330, cardH=495, fortuneH=150, itemH=cardH+fortuneH+36;
+  const W=1600, pad=72, headerH=230, gap=34, cardW=330, cardH=495, fortuneH=150, itemH=cardH+fortuneH+36;
   const perRow=2, dayH=Math.ceil(Math.max(...dayKeys.map(d=>grouped[d].length))/perRow)*itemH+110;
   const H=headerH+dayKeys.length*dayH+pad;
   const canvas=document.createElement("canvas");canvas.width=W*2;canvas.height=H*2;
@@ -685,19 +661,18 @@ async function drawCollectionPNG() {
   const bg=ctx.createLinearGradient(0,0,W,H);bg.addColorStop(0,"#06152f");bg.addColorStop(.52,"#123c70");bg.addColorStop(1,"#071a3a");ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
   for(let i=0;i<90;i++){const x=(i*193)%W,y=(i*317)%(H-40);ctx.fillStyle=i%3===0?"#9edcff":"#d9f2ff";ctx.globalAlpha=.38;ctx.font=`${10+(i%3)*4}px serif`;ctx.fillText(i%2?"✦":"·",x,y);}ctx.globalAlpha=1;
   roundedRect(ctx,32,32,W-64,H-64,28,null,"#8fcdf4");
-  ctx.textAlign="center";ctx.fillStyle="#b9e6ff";ctx.font="18px 'DM Sans', sans-serif";ctx.fillText("✦  A LITTLE MAGIC IN EVERY STREAM  ✦",W/2,82);
-  ctx.fillStyle="#eaf7ff";ctx.font="58px 'Playfair Display', Georgia, serif";ctx.fillText("MY CARD COLLECTION",W/2,151);
-  ctx.fillStyle="#9edcff";ctx.font="22px 'DM Sans', sans-serif";ctx.fillText(`STREAM YOUR SHIP  ·  ROUND ${roundNo}`,W/2,192);
-  ctx.fillStyle="#eaf7ff";ctx.font="24px 'DM Sans', sans-serif";ctx.fillText("@"+username(),W/2,232);
+  ctx.textAlign="center";ctx.fillStyle="#eaf7ff";ctx.font="58px 'Playfair Display', Georgia, serif";ctx.fillText("MY CARD COLLECTION",W/2,112);
+  ctx.fillStyle="#9edcff";ctx.font="25px 'DM Sans', sans-serif";ctx.fillText(String(round?.title || `ROUND ${roundNo}`),W/2,158);
+  ctx.fillStyle="#eaf7ff";ctx.font="24px 'DM Sans', sans-serif";ctx.fillText("@"+username(),W/2,202);
   let y=headerH;
   for(const day of dayKeys){
-    const group=grouped[day];roundedRect(ctx,pad,y,W-pad*2,58,15,"#d9efff");
-    ctx.textAlign="left";ctx.fillStyle="#123c70";ctx.font="bold 24px 'DM Sans', sans-serif";ctx.fillText(`DAY ${day}`,pad+24,y+37);
+    const group=grouped[day];roundedRect(ctx,pad,y,W-pad*2,58,15,"rgba(116,190,244,0.16)","rgba(174,225,255,0.58)");
+    ctx.textAlign="left";ctx.fillStyle="#eaf7ff";ctx.font="bold 24px 'DM Sans', sans-serif";ctx.fillText(`DAY ${day}`,pad+24,y+37);
     const date=group[0].received_date||group[0].checkin_date||"";ctx.textAlign="right";ctx.font="16px 'DM Sans', sans-serif";ctx.fillText(dateLabel(date),W-pad-24,y+36);
     y+=82;
     for(let i=0;i<group.length;i++){
       const c=group[i], col=i%perRow, row=Math.floor(i/perRow), x=(W-(perRow*cardW+(perRow-1)*gap))/2+col*(cardW+gap), cy=y+row*itemH;
-      roundedRect(ctx,x,cy,cardW,cardH+fortuneH,18,"#eaf6ff","#8fcdf4");
+      roundedRect(ctx,x,cy,cardW,cardH+fortuneH,18,"rgba(107,177,231,0.13)","rgba(174,225,255,0.62)");
       const inset=14, imgX=x+inset, imgY=cy+inset, imgW=cardW-inset*2, imgH=cardH-inset*2;
       const front=await loadImage(cardImage(c,"front"));
       roundedRect(ctx,imgX,imgY,imgW,imgH,10,"#173f70","#8fcdf4");
@@ -717,11 +692,11 @@ async function drawCollectionPNG() {
         ctx.font="12px 'DM Sans',sans-serif";
         ctx.fillText(String(c.category||"FORTUNE").toUpperCase(),imgX+imgW/2,imgY+imgH/2+42);
       }
-      ctx.textAlign="center";ctx.fillStyle="#102d55";ctx.font="bold 17px 'DM Sans', sans-serif";
+      ctx.textAlign="center";ctx.fillStyle="#f0f8ff";ctx.font="bold 17px 'DM Sans', sans-serif";
       const name=String(c.card_name||c.name||c.category||"FORTUNE").toUpperCase();
       ctx.fillText(name.slice(0,34),x+cardW/2,cy+cardH+29);
-      ctx.fillStyle="#3975a5";ctx.font="13px 'DM Sans', sans-serif";ctx.fillText(String(c.category||"").toUpperCase(),x+cardW/2,cy+cardH+51);
-      ctx.textAlign="left";ctx.fillStyle="#234b73";ctx.font="15px 'DM Sans', sans-serif";
+      ctx.fillStyle="#a9dcff";ctx.font="13px 'DM Sans', sans-serif";ctx.fillText(String(c.category||"").toUpperCase(),x+cardW/2,cy+cardH+51);
+      ctx.textAlign="left";ctx.fillStyle="#e0f2ff";ctx.font="15px 'DM Sans', sans-serif";
       wrapText(ctx,c.fortune_text||c.fortune||"",x+22,cy+cardH+80,cardW-44,22,4);
     }
     y+=Math.ceil(group.length/perRow)*itemH+18;
