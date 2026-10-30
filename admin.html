@@ -124,8 +124,12 @@ async function enter(){
  $("loginPanel").classList.add("hidden");$("adminApp").classList.remove("hidden");await refreshAll();
 }
 $("loginBtn").addEventListener("click",async()=>{
- try{const {error}=await sb?.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});if(error)throw error;await enter();}
- catch(e){status("loginStatus",e.message||"เข้าสู่ระบบไม่สำเร็จ","error");}
+ try{
+  if(!sb) throw Error("ยังไม่ได้เชื่อมต่อ Supabase กรุณาตรวจสอบ URL และ publishable/anon key");
+  const {error}=await sb.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});
+  if(error)throw error;
+  await enter();
+ }catch(e){status("loginStatus",e.message||"เข้าสู่ระบบไม่สำเร็จ","error");}
 });
 $("password").addEventListener("keydown",e=>{if(e.key==="Enter")$("loginBtn").click();});
 $("logoutBtn").addEventListener("click",async()=>{await sb.auth.signOut();location.reload();});
@@ -158,7 +162,19 @@ function renderCards(){
  $("cardRows").innerHTML=cards.map(c=>{const r=rounds.find(x=>String(x.id)===String(c.round_id));const src=c.front_image_url||c.front_image||"";return `<tr><td>${src?`<img src="${esc(src)}" alt="">`:"—"}</td><td>${esc(c.card_name||c.name||"")}</td><td>${esc(c.category||"")}</td><td>${esc(r?.round_number||"—")}</td><td><div class="actions"><button class="btn secondary" onclick="editCard('${esc(c.id)}')">Edit</button><button class="btn danger" onclick="deleteRow('cards','${esc(c.id)}')">Delete</button></div></td></tr>`}).join("")||'<tr><td colspan="5" class="empty">No cards yet</td></tr>';
 }
 $("saveRound").addEventListener("click",async()=>{
- try{const id=$("roundId").value;const row={round_number:Number($("roundNumber").value),title:$("roundName").value.trim(),is_active:$("roundActive").value==="true",notes:$("roundNotes").value.trim()};if(!row.round_number)throw Error("กรอก Round number");const q=id?sb.from(TABLES.rounds).update(row).eq("id",id):sb.from(TABLES.rounds).insert(row);const {error}=await q;if(error)throw error;status("mainStatus","บันทึก Round แล้ว","ok");resetRound();await refreshAll();}catch(e){status("mainStatus",e.message,"error");}
+  try{
+    const id=$("roundId").value;
+    const row={round_number:Number($("roundNumber").value),title:$("roundName").value.trim(),is_active:$("roundActive").value==="true",notes:$("roundNotes").value.trim()};
+    if(!row.round_number)throw Error("กรอก Round number");
+    if(row.is_active){
+      const {error:deactivateError}=await sb.from(TABLES.rounds).update({is_active:false}).neq("id",id||"00000000-0000-0000-0000-000000000000");
+      if(deactivateError)throw deactivateError;
+    }
+    const q=id?sb.from(TABLES.rounds).update(row).eq("id",id):sb.from(TABLES.rounds).insert(row);
+    const {error}=await q;if(error)throw error;
+    status("mainStatus",row.is_active?"ตั้ง Round นี้เป็น Active แล้ว (รอบอื่นเปลี่ยนเป็น Inactive)":"บันทึก Round แล้ว","ok");
+    resetRound();await refreshAll();
+  }catch(e){status("mainStatus",e.message,"error");}
 });
 $("newRound").addEventListener("click",resetRound);
 function resetRound(){$("roundId").value="";$("roundNumber").value=rounds.length+1;$("roundName").value="";$("roundActive").value="true";$("roundNotes").value="";}
@@ -176,9 +192,40 @@ async function uploadImage(file,folder){
  const {data}=sb.storage.from(BUCKET).getPublicUrl(path);return data.publicUrl;
 }
 $("saveCard").addEventListener("click",async()=>{
- try{const id=$("cardId").value;const old=cards.find(c=>String(c.id)===String(id));const front=await uploadImage($("frontImage").files[0],"front");const back=await uploadImage($("backImage").files[0],"back");
- const row={round_id:$("cardRound").value,category:$("cardCategory").value,card_name:$("cardName").value.trim(),card_number:$("cardNumber").value?Number($("cardNumber").value):null,fortune_text:$("fortune").value.trim(),front_image_url:front||old?.front_image_url||old?.front_image||null,back_image_url:back||old?.back_image_url||old?.back_image||null};
- if(!row.round_id||!row.card_name)throw Error("เลือก Round และกรอกชื่อการ์ด");const q=id?sb.from(TABLES.cards).update(row).eq("id",id):sb.from(TABLES.cards).insert(row);const {error}=await q;if(error)throw error;status("mainStatus","บันทึกการ์ดแล้ว","ok");resetCard();await refreshAll();}catch(e){status("mainStatus",e.message||"บันทึกการ์ดไม่สำเร็จ","error");}
+ try{
+  if(!sb) throw Error("ยังไม่ได้เชื่อมต่อ Supabase กรุณาตรวจสอบ URL และ publishable/anon key");
+  const id=$("cardId").value;
+  const old=cards.find(c=>String(c.id)===String(id));
+  const roundId=$("cardRound").value;
+  const cardName=$("cardName").value.trim();
+  if(!roundId) throw Error("ยังไม่มี Round ให้เลือก — เพิ่ม Round ก่อน");
+  if(!cardName) throw Error("กรอกชื่อการ์ดก่อนบันทึก");
+  const frontFile=$("frontImage").files[0];
+  const backFile=$("backImage").files[0];
+  if(!id && !frontFile) throw Error("เลือก Front image ก่อนบันทึกการ์ด");
+  if(!id && !backFile) throw Error("เลือก Back image ก่อนบันทึกการ์ด");
+  const saveBtn=$("saveCard");
+  saveBtn.disabled=true;
+  saveBtn.textContent="Saving…";
+  const front=await uploadImage(frontFile,"front");
+  const back=await uploadImage(backFile,"back");
+  const row={round_id:roundId,category:$("cardCategory").value,card_name:cardName,card_number:$("cardNumber").value?Number($("cardNumber").value):null,fortune_text:$("fortune").value.trim(),front_image_url:front||old?.front_image_url||old?.front_image||null,back_image_url:back||old?.back_image_url||old?.back_image||null};
+  const q=id?sb.from(TABLES.cards).update(row).eq("id",id):sb.from(TABLES.cards).insert(row);
+  const {error}=await q;
+  if(error) throw error;
+  status("mainStatus","บันทึกการ์ดแล้ว","ok");
+  resetCard();
+  await refreshAll();
+ }catch(e){
+  const msg=e?.message||"บันทึกการ์ดไม่สำเร็จ";
+  status("mainStatus",msg,"error");
+  if(/bucket|storage|row-level security|permission|policy/i.test(msg)){
+    status("mainStatus",msg+" · ตรวจสอบว่ามี Storage bucket ชื่อ fortune-cards และมี policy อนุญาตให้บัญชี Admin อัปโหลดไฟล์", "error");
+  }
+ }finally{
+  $("saveCard").disabled=false;
+  $("saveCard").textContent="Save card";
+ }
 });
 $("newCard").addEventListener("click",resetCard);
 function resetCard(){$("cardId").value="";$("cardName").value="";$("cardNumber").value="";$("fortune").value="";$("frontImage").value="";$("backImage").value="";}

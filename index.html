@@ -61,12 +61,12 @@ input[type=file]{display:none}
 .collection-head .section-title{margin:0}
 .round-select{border:1px solid #b3d9f0;border-radius:999px;padding:9px 13px;background:rgba(111,196,244,.22);color:#e2f4ff;max-width:125px}
 .collection-list{display:flex;flex-direction:column;gap:0}
-.day-block{padding:14px 0;border-bottom:1px solid #dfcdb5}.day-block:first-child{padding-top:4px}.day-block:last-child{border-bottom:0}
-.day-heading{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}.day-name{font-weight:700;font-size:15px}.day-date{font-size:11px;color:#95816a}
+.day-block{padding:16px 0;border-bottom:1px solid rgba(151,210,255,.22)}.day-block:first-child{padding-top:4px}.day-block:last-child{border-bottom:0}
+.day-heading{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;padding:10px 14px;border-radius:10px;background:linear-gradient(100deg,rgba(84,158,220,.22),rgba(36,83,142,.18));border:1px solid rgba(151,210,255,.24)}.day-name{font-weight:700;font-size:15px;color:#eaf6ff;letter-spacing:.04em}.day-date{font-size:11px;color:#a9d8f6}
 .mini-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
-.mini-card{background:rgba(14,45,82,.92);border-radius:13px;padding:9px;text-align:center;cursor:pointer;border:1px solid #b3d9f0;transition:.2s}.mini-card:hover{transform:translateY(-3px);box-shadow:0 7px 15px #4a36221a}
-.card-art{aspect-ratio:3/4;border-radius:8px;padding:6px;border:1px solid #c3a57b;background:#3d629f;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.card-art .ornament{width:100%;height:100%;border:1px solid #f7e8ce;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:#fff2db;background:linear-gradient(145deg,#78d8ff,#315a9a)}
+.mini-card{background:linear-gradient(155deg,rgba(35,83,137,.82),rgba(7,28,66,.94));border-radius:13px;padding:9px;text-align:center;cursor:pointer;border:1px solid rgba(139,205,250,.48);box-shadow:0 8px 24px rgba(0,8,28,.18);transition:.2s}.mini-card:hover{transform:translateY(-3px);box-shadow:0 7px 15px #4a36221a}
+.card-art{aspect-ratio:3/4;border-radius:8px;padding:5px;border:1px solid rgba(173,224,255,.78);background:linear-gradient(145deg,#367db2,#102e63);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.card-art .ornament{width:100%;height:100%;border:1px solid rgba(197,235,255,.75);border-radius:5px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:#eaf7ff;background:linear-gradient(145deg,#56b6e8,#173d79)}
 .card-art .symbol{font-size:35px}.card-art .card-word{font-size:9px;letter-spacing:2px}
 .mini-card[data-category="LUCKY"] .card-art{background:#3b74a8}.mini-card[data-category="LUCKY"] .ornament{background:linear-gradient(145deg,#a3e9ff,#4874aa)}
 .mini-card[data-category="MONEY"] .card-art{background:#2c6d9b}.mini-card[data-category="MONEY"] .ornament{background:linear-gradient(145deg,#7dd9ff,#275d8f)}
@@ -96,6 +96,55 @@ input[type=file]{display:none}
 .proof-readout{background:#e3e7fb;border-radius:12px;padding:12px;margin:12px 0;font-size:12px;line-height:1.6;overflow-wrap:anywhere}
 .proof-actions{display:flex;gap:9px;margin-top:16px}
 .proof-actions button{flex:1}
+
+
+/* Reward card glass modal */
+.modal{z-index:60;background:rgba(2,10,30,.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);padding:18px}
+.fortune-modal-card{
+  position:relative;width:min(900px,100%);max-height:94vh;overflow:auto;
+  padding:clamp(22px,4vw,42px);border-radius:28px;
+  color:#eaf6ff;text-align:center;
+  border:1px solid rgba(126,202,255,.72);
+  background:linear-gradient(145deg,rgba(8,35,79,.78),rgba(9,64,116,.56) 55%,rgba(13,35,84,.78));
+  box-shadow:0 25px 90px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.18);
+  backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)
+}
+.fortune-modal-card:before{content:"";position:absolute;inset:9px;border:1px solid rgba(157,218,255,.22);border-radius:21px;pointer-events:none}
+.fortune-close{position:absolute;right:22px;top:20px;width:44px;height:44px;border-radius:50%;border:1px solid #8acbff;background:rgba(135,205,255,.16);color:#eaf7ff;font-size:28px;z-index:2}
+.fortune-modal-heading{position:relative;z-index:1;margin:0 auto 12px}
+.fortune-moon{font-size:26px;color:#bde5ff;text-shadow:0 0 18px #62baff;margin-bottom:4px}
+.fortune-modal-heading .modal-title{font-family:"Cormorant Garamond",serif;font-size:clamp(28px,4.4vw,46px);font-weight:600;color:#eaf6ff;text-shadow:0 0 22px rgba(96,181,255,.45)}
+#modalInstruction{margin:7px 0 0;color:#c9e9ff;font-size:15px}
+.fortune-card-stage{display:flex;align-items:center;justify-content:center;gap:clamp(10px,4vw,42px);margin:20px auto 10px;min-height:clamp(330px,54vh,510px)}
+.fortune-flip-card{width:clamp(205px,27vw,300px);aspect-ratio:2/3;perspective:1200px;cursor:pointer;outline:none;filter:drop-shadow(0 0 22px rgba(65,169,255,.28))}
+.fortune-flip-card:focus-visible{outline:2px solid #b9e5ff;outline-offset:8px;border-radius:17px}
+.fortune-flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .72s cubic-bezier(.2,.75,.2,1)}
+.fortune-flip-card.is-flipped .fortune-flip-inner{transform:rotateY(180deg)}
+.fortune-card-face{position:absolute;inset:0;border-radius:17px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:1px solid rgba(151,219,255,.95);padding:7px;background:linear-gradient(145deg,#83d9ff,#183e83 60%,#a7cfff);box-shadow:inset 0 0 0 1px rgba(255,255,255,.3),0 0 24px rgba(65,169,255,.25)}
+.fortune-card-face .big-card-inner{height:100%;width:100%;border-radius:11px;border:1px solid rgba(221,244,255,.8);background:linear-gradient(145deg,#78d8ff,#17366f);background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;gap:12px;overflow:hidden}
+.fortune-card-face .symbol{font-size:66px;text-shadow:0 0 20px #8bdcff}
+.fortune-card-face .card-word{font-size:12px;letter-spacing:3px;text-shadow:0 2px 8px #001b4c}
+.fortune-card-back{transform:rotateY(180deg);background:linear-gradient(145deg,rgba(25,91,151,.98),rgba(8,30,75,.98));}
+.fortune-back-content{height:100%;border:1px solid rgba(177,226,255,.55);border-radius:10px;padding:20px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 15%,rgba(117,204,255,.24),transparent 45%),linear-gradient(160deg,#174b85,#091d4d)}
+.fortune-back-content .fortune-label{color:#9edaff;font-size:11px;letter-spacing:.18em}
+.fortune-copy{color:#f0f8ff;font-size:clamp(13px,1.6vw,17px);line-height:1.85;white-space:pre-wrap;overflow:auto;max-height:65%;text-align:center}
+.fortune-back-star{color:#a9e0ff;font-size:22px;margin:7px}
+.fortune-arrow{flex:0 0 48px;width:48px;height:48px;border-radius:50%;border:1px solid rgba(151,219,255,.75);background:rgba(91,174,237,.16);color:#eaf7ff;font-size:34px;line-height:1;display:grid;place-items:center}
+.fortune-arrow:disabled{opacity:.25;cursor:default}
+.fortune-card-count{color:#cdeaff;font-family:"Cormorant Garamond",serif;font-size:19px;margin-top:4px}
+.fortune-tap-hint{color:#b9e4ff;font-size:13px;margin:5px 0 17px}
+.fortune-modal-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.fortune-modal-actions .btn{min-width:170px;border:1px solid rgba(159,220,255,.55)}
+.fortune-modal-actions .btn-light{background:rgba(104,180,237,.13);color:#eaf7ff}
+.fortune-modal-actions .btn-dark{background:linear-gradient(110deg,#155ec0,#267fdf);box-shadow:0 0 22px rgba(51,146,255,.35);color:#fff}
+@media(max-width:600px){
+ .fortune-modal-card{padding:55px 14px 20px;border-radius:22px}
+ .fortune-close{right:16px;top:13px}
+ .fortune-card-stage{min-height:clamp(280px,48vh,390px);gap:7px;margin-top:14px}
+ .fortune-flip-card{width:min(58vw,230px)}
+ .fortune-arrow{width:36px;height:36px;flex-basis:36px;font-size:27px}
+ .fortune-modal-actions .btn{min-width:130px;flex:1}
+}
 
 </style>
 </head>
@@ -163,7 +212,7 @@ input[type=file]{display:none}
         <div class="tarot"><div class="tarot-inner"><div class="tarot-sigil">✿</div><div class="tarot-stars">✧ · ✦</div></div></div>
       </div>
       <p class="center-note"></p>
-      <button class="btn btn-dark" id="viewCollectionBtn" type="button">View My Collection</button>
+      <button class="btn btn-dark" id="openCollectionBtn" type="button">View My Collection</button>
     </section>
 
     <section class="panel collection-panel">
@@ -187,9 +236,10 @@ input[type=file]{display:none}
     <div class="proof-readout">
       <div style="font-size:10px;color:#737ba8;margin-bottom:4px">PLAYLIST</div>
       <strong id="proofExpectedTitle">—</strong>
-      <div style="font-size:10px;color:#737ba8;margin:10px 0 4px">ข้อความที่ระบบอ่านได้</div>
-      <div id="proofOcrText">ยังอ่านข้อความไม่ได้</div>
-      <div id="proofGreenStatus" style="margin-top:8px;font-weight:600">กำลังตรวจภาพ…</div>
+      <div id="proofOcrText" style="margin-top:12px;color:#59618b">
+        ระบบอ่านชื่อ Playlist จากภาพได้ไม่ชัดเจน
+      </div>
+      <div id="proofGreenStatus" style="margin-top:8px;font-weight:600"></div>
     </div>
     <p>Playlist ถูกต้องและ save เรียบร้อย สามารถกดยืนยันเพื่อ Check-in ได้</p>
     <div class="proof-actions">
@@ -200,13 +250,41 @@ input[type=file]{display:none}
 </div>
 
 <div class="modal" id="cardModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-  <div class="modal-card">
-    <div class="modal-head"><h2 class="modal-title" id="modalTitle">Your Card</h2><button class="close" id="closeModal" aria-label="Close">×</button></div>
-    <div class="flip-area">
-      <div class="big-card"><div class="big-card-inner" id="modalCardArt"><div class="symbol">♡</div><div class="card-word">YOUR FORTUNE</div></div></div>
-      <div><div class="fortune-label" id="modalCategory">CARD FORTUNE</div><div class="fortune-copy" id="modalFortune"></div>
-        <div class="modal-actions"><button class="btn btn-dark" id="flipBtn" type="button">View Back</button><button class="btn btn-light" id="closeModal2" type="button">Close</button></div>
+  <div class="modal-card fortune-modal-card">
+    <button class="fortune-close" id="closeModal" aria-label="Close">×</button>
+    <div class="fortune-modal-heading">
+      <div class="fortune-moon">☾</div>
+      <h2 class="modal-title" id="modalTitle">วันนี้คุณโชคดีในด้าน…</h2>
+      <p id="modalInstruction">แตะการ์ดเพื่อรับคำทำนาย</p>
+    </div>
+
+    <div class="fortune-card-stage">
+      <button class="fortune-arrow" id="prevDrawCard" type="button" aria-label="Previous card">‹</button>
+      <div class="fortune-flip-card" id="fortuneFlipCard" role="button" tabindex="0" aria-label="แตะการ์ดเพื่อพลิกดูคำทำนาย">
+        <div class="fortune-flip-inner" id="fortuneFlipInner">
+          <div class="fortune-card-face fortune-card-front">
+            <div class="big-card-inner" id="modalCardArt">
+              <div class="symbol">♡</div><div class="card-word">YOUR FORTUNE</div>
+            </div>
+          </div>
+          <div class="fortune-card-face fortune-card-back">
+            <div class="fortune-back-content">
+              <div class="fortune-back-star">✦</div>
+              <div class="fortune-label" id="modalCategory">CARD FORTUNE</div>
+              <div class="fortune-copy" id="modalFortune"></div>
+              <div class="fortune-back-star">✦</div>
+            </div>
+          </div>
+        </div>
       </div>
+      <button class="fortune-arrow" id="nextDrawCard" type="button" aria-label="Next card">›</button>
+    </div>
+
+    <div class="fortune-card-count" id="drawCardCount">1 / 2</div>
+    <p class="fortune-tap-hint" id="fortuneTapHint">แตะการ์ดเพื่อเปิดคำทำนาย ✦</p>
+    <div class="fortune-modal-actions">
+      <button class="btn btn-light" id="closeModal2" type="button">ปิด</button>
+      <button class="btn btn-dark" id="viewCollectionBtn" type="button">ดูการ์ดทั้งหมด</button>
     </div>
   </div>
 </div>
@@ -236,6 +314,7 @@ const $ = id => document.getElementById(id);
 const supabaseReady = SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("YOUR_SUPABASE") && SUPABASE_ANON_KEY.length > 20 && !SUPABASE_ANON_KEY.includes("YOUR_SUPABASE");
 const sb = supabaseReady ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 let rounds = [], days = [], collection = [], activeCard = null, modalSide = "front", proofFile = null;
+let drawCards = [], drawCardIndex = 0;
 
 const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const username = () => $("username").value.trim().replace(/^@+/, "");
@@ -319,6 +398,8 @@ $("username").addEventListener("change",loadCollection);
 $("username").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();loadCollection();}});
 $("proofInput").addEventListener("change",e=>{
   proofFile=e.target.files?.[0]||null;
+  lastProofOcrText = "";
+  pendingProofConfirmation = false;
   if(!proofFile){
     $("proofPreview").hidden=true;
     $("uploadMain").textContent="แนบภาพหลักฐานการ Save Playlist";
@@ -368,6 +449,7 @@ async function readProofImage(file){
     logger:m=>{if(m.status==="recognizing text")$("uploadSub").textContent=`กำลังอ่านภาพ ${Math.round((m.progress||0)*100)}%`;}
   });
   return (result?.data?.text||"").trim();
+  
 }
 async function detectGreenMark(file){
   try{
@@ -393,10 +475,16 @@ async function detectGreenMark(file){
 }
 function openProofConfirm(expected,ocrText,greenFound){
   $("proofExpectedTitle").textContent=expected||"Playlist ของวันที่เลือก";
-  $("proofOcrText").textContent=ocrText||"ระบบอ่านข้อความจากภาพไม่ได้";
-  $("proofGreenStatus").textContent=greenFound
-    ?"✓ พบสีเขียวในภาพ (ใช้เป็นข้อมูลประกอบ)"
-    :"ไม่พบเครื่องหมายสีเขียวชัดเจน — กรุณาตรวจสอบด้วยตนเอง";
+
+  // Do not display raw OCR output: Spotify screenshots often produce
+  // garbled Thai/English text, which is confusing to users.
+  $("proofOcrText").textContent =
+    "ระบบอ่านชื่อ Playlist จากภาพได้ไม่ชัดเจน กรุณาตรวจสอบภาพและชื่อ Playlist ด้านบน";
+
+  $("proofGreenStatus").textContent = greenFound
+    ? "✓ ตรวจพบการ save playlist"
+    : "กรุณาตรวจสอบภาพด้วยตนเอง";
+
   $("proofConfirmModal").classList.add("open");
 }
 function closeProofConfirm(){
@@ -408,6 +496,7 @@ $("proofConfirmBtn").addEventListener("click",async()=>{
   closeProofConfirm();
   await submitCheckin();
 });
+let lastProofOcrText = "";
 async function submitCheckin(){
   if(!proofFile){setStatus("checkinStatus","แนบภาพหลักฐานก่อน Check-in","error");return;}
   setLoading(true);
@@ -416,6 +505,7 @@ async function submitCheckin(){
     fd.append("username",username());
     fd.append("round_day_id",$("eventDay").value);
     fd.append("proof",proofFile,proofFile.name);
+    fd.append("ocr_text",lastProofOcrText);
     fd.append("manual_confirmed",pendingProofConfirmation?"true":"false");
     const response=await fetch(`${SUPABASE_URL}/functions/v1/${CONFIG.checkinFunction}`,{
       method:"POST",
@@ -434,34 +524,135 @@ async function submitCheckin(){
   }catch(e){
     setStatus("checkinStatus",e.message||"เกิดข้อผิดพลาด กรุณาลองใหม่","error");
   }finally{setLoading(false);}
+
 }
+
+// Read the uploaded Spotify screenshot before sending the check-in request.
+$("checkinBtn").addEventListener("click", async () => {
+  if (!username()) {
+    setStatus("checkinStatus", "กรอก X / Twitter account ก่อน Check-in", "error");
+    $("username").focus();
+    return;
+  }
+  if (!$("eventDay").value) {
+    setStatus("checkinStatus", "เลือก Event day ก่อน Check-in", "error");
+    $("eventDay").focus();
+    return;
+  }
+  if (!proofFile) {
+    setStatus("checkinStatus", "แนบภาพหลักฐานก่อน Check-in", "error");
+    return;
+  }
+
+  setLoading(true);
+  clearStatus("checkinStatus");
+
+  try {
+    setStatus("checkinStatus", "กำลังอ่านข้อความจากภาพ Spotify…", "info");
+    lastProofOcrText = await readProofImage(proofFile);
+
+    const expected = selectedPlaylistTitle();
+    const score = titleMatchScore(expected, lastProofOcrText);
+    const greenFound = await detectGreenMark(proofFile);
+
+    if (score >= 0.45) {
+      // The playlist title looks like a match, so continue without a popup.
+      pendingProofConfirmation = false;
+      clearStatus("checkinStatus");
+      await submitCheckin();
+    } else {
+      // If OCR is unclear, let the user review and confirm manually.
+      pendingProofConfirmation = false;
+      clearStatus("checkinStatus");
+      openProofConfirm(expected, lastProofOcrText, greenFound);
+    }
+  } catch (error) {
+    console.error("Proof OCR failed:", error);
+    setStatus(
+      "checkinStatus",
+      "อ่านภาพไม่สำเร็จ กรุณาลองอัปโหลดใหม่อีกครั้ง",
+      "error"
+    );
+  } finally {
+    setLoading(false);
+  }
+});
+
 function showDrawResult(cards) {
   if(!cards?.length)return;
-  const card=cards[0];openCard(card.id||card.card_id,card);
-  if(cards.length>1) $("modalTitle").textContent=`Your Cards · ${cards.length} cards`;
+  drawCards = cards;
+  drawCardIndex = 0;
+  openDrawCard();
+}
+function categoryThai(category){
+  const map={
+    LOVE:"ความรัก",
+    MONEY:"การเงิน",
+    HAPPINESS:"ความสุข",
+    LUCKY:"โชคลาภ",
+    SUCCESS:"ความสำเร็จ",
+    SOULMATE:"เนื้อคู่"
+  };
+  return map[String(category||"").toUpperCase()] || String(category||"โชคดี");
+}
+function openDrawCard(){
+  activeCard = drawCards[drawCardIndex] || null;
+  if(!activeCard)return;
+  modalSide="front";
+  $("fortuneFlipCard").classList.remove("is-flipped");
+  renderModal();
+  $("cardModal").classList.add("open");
+  document.body.style.overflow="hidden";
 }
 function openCard(id, supplied=null) {
-  activeCard=supplied||collection.find(c=>String(c.id)===String(id)||String(c.card_id)===String(id));
-  if(!activeCard)return;
-  modalSide="front";renderModal();$("cardModal").classList.add("open");document.body.style.overflow="hidden";
+  const card=supplied||collection.find(c=>String(c.id)===String(id)||String(c.card_id)===String(id));
+  if(!card)return;
+  drawCards=[card];
+  drawCardIndex=0;
+  openDrawCard();
 }
 function renderModal() {
   const c=activeCard;if(!c)return;
-  const isBack=modalSide==="back",src=cardImage(c,modalSide);
-  $("modalTitle").textContent=c.card_name||c.name||c.category||"Your Card";
+  const src=cardImage(c,"front");
+  const category=categoryThai(c.category);
+  $("modalTitle").textContent=`วันนี้คุณโชคดีในด้าน${category}`;
+  $("modalInstruction").textContent="แตะการ์ดเพื่อรับคำทำนาย";
   $("modalCategory").textContent=`${String(c.category||"FORTUNE").toUpperCase()}${c.received_date?" · "+dateLabel(c.received_date):""}`;
-  $("modalFortune").textContent=isBack?(c.fortune_text||c.fortune||""):(c.short_description||"✦ Your fortune is waiting on the other side. ✦");
+  $("modalFortune").textContent=c.fortune_text||c.fortune||"วันนี้เป็นวันที่ดี เปิดใจรับโอกาสและสิ่งดี ๆ ที่กำลังเข้ามา";
   $("modalCardArt").style.backgroundImage=src?`url("${src.replace(/["\\]/g,"")}")`:"";
-  $("modalCardArt").style.backgroundSize="cover";$("modalCardArt").style.backgroundPosition="center";
-  $("modalCardArt").innerHTML=src?"":`<div class="symbol">${categorySymbol(c.category)}</div><div class="card-word">${esc(c.category||"YOUR FORTUNE")}</div>`;
-  $("flipBtn").textContent=isBack?"View Front":"View Back";
+  $("modalCardArt").style.backgroundSize="cover";
+  $("modalCardArt").style.backgroundPosition="center";
+  $("modalCardArt").innerHTML=src?"":`<div class="symbol">${categorySymbol(c.category)}</div><div class="card-word">${esc(c.card_name||c.category||"YOUR FORTUNE")}</div>`;
+  $("drawCardCount").textContent=`${drawCardIndex+1} / ${drawCards.length}`;
+  $("prevDrawCard").disabled=drawCardIndex===0;
+  $("nextDrawCard").disabled=drawCardIndex===drawCards.length-1;
+  $("fortuneTapHint").textContent=modalSide==="back"?"แตะการ์ดอีกครั้งเพื่อกลับด้านหน้า":"แตะการ์ดเพื่อเปิดคำทำนาย ✦";
+  $("fortuneFlipCard").classList.toggle("is-flipped",modalSide==="back");
 }
-$("flipBtn").addEventListener("click",()=>{modalSide=modalSide==="front"?"back":"front";renderModal();});
+function flipDrawCard(){
+  modalSide=modalSide==="front"?"back":"front";
+  renderModal();
+}
+$("fortuneFlipCard").addEventListener("click",flipDrawCard);
+$("fortuneFlipCard").addEventListener("keydown",e=>{
+  if(e.key==="Enter"||e.key===" "){e.preventDefault();flipDrawCard();}
+});
+$("prevDrawCard").addEventListener("click",()=>{
+  if(drawCardIndex>0){drawCardIndex--;openDrawCard();}
+});
+$("nextDrawCard").addEventListener("click",()=>{
+  if(drawCardIndex<drawCards.length-1){drawCardIndex++;openDrawCard();}
+});
 function closeModal(){$("cardModal").classList.remove("open");document.body.style.overflow="";}
 $("closeModal").addEventListener("click",closeModal);$("closeModal2").addEventListener("click",closeModal);
 $("cardModal").addEventListener("click",e=>{if(e.target===$("cardModal"))closeModal();});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();closeProofConfirm();}});
-$("viewCollectionBtn").addEventListener("click",()=>{document.querySelector(".collection-panel").scrollIntoView({behavior:"smooth",block:"start"});if(username())loadCollection();else $("username").focus();});
+function goToCollection(){
+  document.querySelector(".collection-panel").scrollIntoView({behavior:"smooth",block:"start"});
+  if(username())loadCollection();else $("username").focus();
+}
+$("viewCollectionBtn").addEventListener("click",goToCollection);
+$("openCollectionBtn").addEventListener("click",goToCollection);
 
 function loadImage(src) {
   return new Promise(resolve=>{
@@ -491,41 +682,51 @@ async function drawCollectionPNG() {
   const H=headerH+dayKeys.length*dayH+pad;
   const canvas=document.createElement("canvas");canvas.width=W*2;canvas.height=H*2;
   const ctx=canvas.getContext("2d");ctx.scale(2,2);
-  const bg=ctx.createLinearGradient(0,0,W,H);bg.addColorStop(0,"#080d2b");bg.addColorStop(.55,"#263b79");bg.addColorStop(1,"#171638");ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
-  for(let i=0;i<90;i++){const x=(i*193)%W,y=(i*317)%(H-40);ctx.fillStyle=i%3===0?"#c9b8ff":"#fff0d4";ctx.globalAlpha=.38;ctx.font=`${10+(i%3)*4}px serif`;ctx.fillText(i%2?"✦":"·",x,y);}ctx.globalAlpha=1;
-  roundedRect(ctx,32,32,W-64,H-64,28,null,"#c9b8ff");
-  ctx.textAlign="center";ctx.fillStyle="#c9b8ff";ctx.font="18px 'DM Sans', sans-serif";ctx.fillText("✦  A LITTLE MAGIC IN EVERY STREAM  ✦",W/2,82);
-  ctx.fillStyle="#f8eddb";ctx.font="58px 'Playfair Display', Georgia, serif";ctx.fillText("MY CARD COLLECTION",W/2,151);
-  ctx.fillStyle="#e2cfad";ctx.font="22px 'DM Sans', sans-serif";ctx.fillText(`STREAM YOUR SHIP  ·  ROUND ${roundNo}`,W/2,192);
-  ctx.fillStyle="#f8eddb";ctx.font="24px 'DM Sans', sans-serif";ctx.fillText("@"+username(),W/2,232);
+  const bg=ctx.createLinearGradient(0,0,W,H);bg.addColorStop(0,"#06152f");bg.addColorStop(.52,"#123c70");bg.addColorStop(1,"#071a3a");ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+  for(let i=0;i<90;i++){const x=(i*193)%W,y=(i*317)%(H-40);ctx.fillStyle=i%3===0?"#9edcff":"#d9f2ff";ctx.globalAlpha=.38;ctx.font=`${10+(i%3)*4}px serif`;ctx.fillText(i%2?"✦":"·",x,y);}ctx.globalAlpha=1;
+  roundedRect(ctx,32,32,W-64,H-64,28,null,"#8fcdf4");
+  ctx.textAlign="center";ctx.fillStyle="#b9e6ff";ctx.font="18px 'DM Sans', sans-serif";ctx.fillText("✦  A LITTLE MAGIC IN EVERY STREAM  ✦",W/2,82);
+  ctx.fillStyle="#eaf7ff";ctx.font="58px 'Playfair Display', Georgia, serif";ctx.fillText("MY CARD COLLECTION",W/2,151);
+  ctx.fillStyle="#9edcff";ctx.font="22px 'DM Sans', sans-serif";ctx.fillText(`STREAM YOUR SHIP  ·  ROUND ${roundNo}`,W/2,192);
+  ctx.fillStyle="#eaf7ff";ctx.font="24px 'DM Sans', sans-serif";ctx.fillText("@"+username(),W/2,232);
   let y=headerH;
   for(const day of dayKeys){
-    const group=grouped[day];roundedRect(ctx,pad,y,W-pad*2,58,15,"#f4e6d2");
-    ctx.textAlign="left";ctx.fillStyle="#263b79";ctx.font="bold 24px 'DM Sans', sans-serif";ctx.fillText(`DAY ${day}`,pad+24,y+37);
+    const group=grouped[day];roundedRect(ctx,pad,y,W-pad*2,58,15,"#d9efff");
+    ctx.textAlign="left";ctx.fillStyle="#123c70";ctx.font="bold 24px 'DM Sans', sans-serif";ctx.fillText(`DAY ${day}`,pad+24,y+37);
     const date=group[0].received_date||group[0].checkin_date||"";ctx.textAlign="right";ctx.font="16px 'DM Sans', sans-serif";ctx.fillText(dateLabel(date),W-pad-24,y+36);
     y+=82;
     for(let i=0;i<group.length;i++){
       const c=group[i], col=i%perRow, row=Math.floor(i/perRow), x=(W-(perRow*cardW+(perRow-1)*gap))/2+col*(cardW+gap), cy=y+row*itemH;
-      roundedRect(ctx,x,cy,cardW,cardH+fortuneH,18,"#f2efff","#c9b8ff");
+      roundedRect(ctx,x,cy,cardW,cardH+fortuneH,18,"#eaf6ff","#8fcdf4");
       const inset=14, imgX=x+inset, imgY=cy+inset, imgW=cardW-inset*2, imgH=cardH-inset*2;
-      const front=await loadImage(cardImage(c,"front")), back=await loadImage(cardImage(c,"back"));
-      const drawCardSide=(img,sx,sy,sw,sh,category)=>{
-        roundedRect(ctx,sx,sy,sw,sh,9,"#c7e7fa","#b4a9e8");
-        if(img){ctx.save();ctx.beginPath();ctx.roundRect(sx+4,sy+4,sw-8,sh-8,6);ctx.clip();const scale=Math.max((sw-8)/img.width,(sh-8)/img.height),dw=img.width*scale,dh=img.height*scale;ctx.drawImage(img,sx+4+(sw-8-dw)/2,sy+4+(sh-8-dh)/2,dw,dh);ctx.restore();}
-        else {roundedRect(ctx,sx+7,sy+7,sw-14,sh-14,7,"#263b79","#c9b8ff");ctx.textAlign="center";ctx.fillStyle="#e7ddff";ctx.font="48px Georgia,serif";ctx.fillText(categorySymbol(category),sx+sw/2,sy+sh/2);ctx.font="12px 'DM Sans',sans-serif";ctx.fillText(String(category||"FORTUNE").toUpperCase(),sx+sw/2,sy+sh/2+42);}
-      };
-      const half=(imgW-10)/2;
-      drawCardSide(front,imgX,imgY,half,imgH,c.category);drawCardSide(back,imgX+half+10,imgY,half,imgH,c.category);
-      ctx.textAlign="center";ctx.fillStyle="#24264b";ctx.font="bold 17px 'DM Sans', sans-serif";
+      const front=await loadImage(cardImage(c,"front"));
+      roundedRect(ctx,imgX,imgY,imgW,imgH,10,"#173f70","#8fcdf4");
+      if(front){
+        ctx.save();
+        ctx.beginPath();
+        ctx.roundRect(imgX+4,imgY+4,imgW-8,imgH-8,7);
+        ctx.clip();
+        const scale=Math.max((imgW-8)/front.width,(imgH-8)/front.height);
+        const dw=front.width*scale,dh=front.height*scale;
+        ctx.drawImage(front,imgX+4+(imgW-8-dw)/2,imgY+4+(imgH-8-dh)/2,dw,dh);
+        ctx.restore();
+      }else{
+        roundedRect(ctx,imgX+7,imgY+7,imgW-14,imgH-14,7,"#163d70","#8fcdf4");
+        ctx.textAlign="center";ctx.fillStyle="#eaf7ff";ctx.font="48px Georgia,serif";
+        ctx.fillText(categorySymbol(c.category),imgX+imgW/2,imgY+imgH/2);
+        ctx.font="12px 'DM Sans',sans-serif";
+        ctx.fillText(String(c.category||"FORTUNE").toUpperCase(),imgX+imgW/2,imgY+imgH/2+42);
+      }
+      ctx.textAlign="center";ctx.fillStyle="#102d55";ctx.font="bold 17px 'DM Sans', sans-serif";
       const name=String(c.card_name||c.name||c.category||"FORTUNE").toUpperCase();
       ctx.fillText(name.slice(0,34),x+cardW/2,cy+cardH+29);
-      ctx.fillStyle="#8d7352";ctx.font="13px 'DM Sans', sans-serif";ctx.fillText(String(c.category||"").toUpperCase(),x+cardW/2,cy+cardH+51);
-      ctx.textAlign="left";ctx.fillStyle="#3e4678";ctx.font="15px 'DM Sans', sans-serif";
+      ctx.fillStyle="#3975a5";ctx.font="13px 'DM Sans', sans-serif";ctx.fillText(String(c.category||"").toUpperCase(),x+cardW/2,cy+cardH+51);
+      ctx.textAlign="left";ctx.fillStyle="#234b73";ctx.font="15px 'DM Sans', sans-serif";
       wrapText(ctx,c.fortune_text||c.fortune||"",x+22,cy+cardH+80,cardW-44,22,4);
     }
     y+=Math.ceil(group.length/perRow)*itemH+18;
   }
-  ctx.textAlign="center";ctx.fillStyle="#c9b8ff";ctx.font="19px 'Playfair Display', Georgia, serif";ctx.fillText("Cattrovertsb  ✦",W/2,H-42);
+  ctx.textAlign="center";ctx.fillStyle="#b9e6ff";ctx.font="19px 'Playfair Display', Georgia, serif";ctx.fillText("Cattrovertsb  ✦",W/2,H-42);
   return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve({blob,canvas}):reject(new Error("สร้างภาพ PNG ไม่สำเร็จ")),"image/png"));
 }
 $("downloadBtn").addEventListener("click",async()=>{
