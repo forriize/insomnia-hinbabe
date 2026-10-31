@@ -888,7 +888,14 @@ function wrapText(ctx,text,x,y,maxWidth,lineHeight,maxLines=8) {
   if(line&&lines<maxLines)ctx.fillText(line,x,y);
 }
 async function drawCollectionPNG() {
-  try { await document.fonts.load('16px "IBM Plex Sans Thai"'); await document.fonts.ready; } catch (_) {}
+ try {
+    await Promise.all([
+      document.fonts.load('500 17px "IBM Plex Sans Thai"', "คำทำนายภาษาไทย"),
+      document.fonts.load('bold 20px "IBM Plex Sans Thai"', "ทีมพี่หิน ทีมเบ้บ"),
+      document.fonts.load('58px Georgia', "MY CARD COLLECTION")
+    ]);
+    await document.fonts.ready;
+  } catch (_) {}
   if(!username()){setStatus("collectionStatus","กรอก X / Twitter account ก่อนดาวน์โหลด","error");$("username").focus();return;}
   const orderedRounds=[...rounds].sort((a,b)=>Number(a.round_number||0)-Number(b.round_number||0));
   const visible=orderedRounds.slice(0,3).map((round,index)=>({round,index,meta:getRoundMeta(round)}));
