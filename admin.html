@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#06172d"><title>Stream Your Ship — Admin</title>
+<meta name="theme-color" content="#06172d"><title>Insomnia — Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -15,7 +15,7 @@ body:after{content:"✦ · ☾ · ✧ · ✦ · ☽ · ✧";position:fixed;inset
 </style></head>
 <body>
 <div class="wrap">
-<header class="top"><div class="brand"><h1>Stream Your Ship</h1><p>#ทีมหินเบ้บ · Admin Console</p></div><a href="./index.html">← Public site</a></header>
+<header class="top"><div class="brand"><h1>Insomnia</h1><p>#ทีมพี่หิน #ทีมน้องเบ้บ · Admin Console</p></div><a href="./index.html">← Public site</a></header>
 
 <section class="panel login" id="loginPanel">
 <h2>Admin Sign in</h2>
@@ -62,8 +62,8 @@ body:after{content:"✦ · ☾ · ✧ · ✦ · ☽ · ✧";position:fixed;inset
 <div class="field"><label for="eventDate">Event date</label><input class="input" id="eventDate" type="date"></div>
 <div class="field"><label for="dayOpen">Check-in status</label><select id="dayOpen"><option value="true">Open</option><option value="false">Closed</option></select></div>
 </div>
-<div class="field"><label for="playlistTitle">Playlist title</label><input class="input" id="playlistTitle" value="Spotify streaming for Insomnia"></div>
-<div class="field"><label for="playlistUrl">Spotify playlist URL</label><input class="input" id="playlistUrl" type="url" value="https://open.spotify.com/playlist/1VLc055dp3O5k3UMdzHiIK"></div>
+<div class="grid"><div class="field"><label for="playlistTitle">Playlist 1 title</label><input class="input" id="playlistTitle" value="Spotify streaming for Insomnia"></div><div class="field"><label for="playlistUrl">Playlist 1 URL</label><input class="input" id="playlistUrl" type="url" value="https://open.spotify.com/playlist/1VLc055dp3O5k3UMdzHiIK"></div></div>
+<div class="grid"><div class="field"><label for="playlist2Title">Playlist 2 title (optional)</label><input class="input" id="playlist2Title" placeholder="ชื่อ Playlist ที่ 2"></div><div class="field"><label for="playlist2Url">Playlist 2 URL (optional)</label><input class="input" id="playlist2Url" type="url" placeholder="https://open.spotify.com/playlist/..."></div></div>
 <div class="actions"><button class="btn" id="saveDay">Save day</button><button class="btn secondary" id="newDay">New day</button></div>
 <div class="divider"></div><div class="tablewrap"><table><thead><tr><th>Round</th><th>Day</th><th>Date</th><th>Playlist</th><th>Status</th><th>Actions</th></tr></thead><tbody id="dayRows"></tbody></table></div>
 </section>
@@ -72,7 +72,7 @@ body:after{content:"✦ · ☾ · ✧ · ✦ · ☽ · ✧";position:fixed;inset
 <h2>Cards</h2>
 <input id="cardId" type="hidden">
 <div class="grid">
-<div class="field"><label for="cardRound">Round</label><select id="cardRound"></select></div>
+<div class="field"><label>Card deck</label><input class="input" value="Shared deck · 12 cards · All rounds" disabled></div>
 <div class="field"><label for="cardCategory">Category</label><select id="cardCategory"><option>LOVE</option><option>MONEY</option><option>HAPPINESS</option><option>LUCKY</option><option>SUCCESS</option><option>SOULMATE</option></select></div>
 </div>
 <div class="grid">
@@ -84,9 +84,9 @@ body:after{content:"✦ · ☾ · ✧ · ✦ · ☽ · ✧";position:fixed;inset
 <div class="field"><label for="frontImage">Front image</label><input class="input file" id="frontImage" type="file" accept="image/png,image/jpeg,image/webp"></div>
 <div class="field"><label for="backImage">Back image</label><input class="input file" id="backImage" type="file" accept="image/png,image/jpeg,image/webp"></div>
 </div>
-<p class="notice">อัปโหลดรูปไปยัง Supabase Storage bucket ชื่อ <code>fortune-cards</code> (ตั้งเป็น public read) แล้วบันทึก URL ลงตาราง cards</p>
+<p class="notice">การ์ดทั้งหมดเป็นกองกลางชุดเดียว 12 ใบ ใช้ร่วมกันทุก Round · ผู้เล่นแต่ละคนจะไม่ได้รับการ์ดใบเดิมซ้ำ</p>
 <div class="actions"><button class="btn" id="saveCard">Save card</button><button class="btn secondary" id="newCard">New card</button></div>
-<div class="divider"></div><div class="tablewrap"><table><thead><tr><th>Front</th><th>Card</th><th>Category</th><th>Round</th><th>Actions</th></tr></thead><tbody id="cardRows"></tbody></table></div>
+<div class="divider"></div><div class="tablewrap"><table><thead><tr><th>Front</th><th>Card</th><th>Category</th><th>Deck</th><th>Actions</th></tr></thead><tbody id="cardRows"></tbody></table></div>
 </section>
 
 <section class="panel">
@@ -139,7 +139,7 @@ async function refreshAll(){
   const [r,d,c]=await Promise.all([sb.from(TABLES.rounds).select("*").order("round_number"),sb.from(TABLES.days).select("*").order("event_date"),sb.from(TABLES.cards).select("*").order("category")]);
   if(r.error)throw r.error;if(d.error)throw d.error;if(c.error)throw c.error;
   rounds=r.data||[];days=d.data||[];cards=c.data||[];
-  renderRounds();renderDays();renderCards();fillSelect("dayRound",rounds);fillSelect("cardRound",rounds);
+  renderRounds();renderDays();renderCards();fillSelect("dayRound",rounds);
   $("statRounds").textContent=rounds.length;
   const today=new Date().toLocaleDateString("en-CA");
   const [{data:allRows,error:e1},{data:todayRows,error:e2}]=await Promise.all([
@@ -156,10 +156,10 @@ function renderRounds(){
  $("roundRows").innerHTML=rounds.map((r,i)=>`<tr><td>Round ${esc(r.round_number??i+1)}</td><td>${esc(r.title||"")}</td><td>${r.is_active?'<span class="pill">Active</span>':'<span class="pill">Inactive</span>'}</td><td><div class="actions"><button class="btn secondary" onclick="editRound('${esc(r.id)}')">Edit</button><button class="btn danger" onclick="deleteRow('rounds','${esc(r.id)}')">Delete</button></div></td></tr>`).join("")||'<tr><td colspan="4" class="empty">No rounds yet</td></tr>';
 }
 function renderDays(){
- $("dayRows").innerHTML=days.map(d=>{const r=rounds.find(x=>String(x.id)===String(d.round_id));return `<tr><td>${esc(r?.round_number||"—")}</td><td>Day ${esc(d.day_number)}</td><td>${esc(d.event_date||"")}</td><td>${esc(d.playlist_title||"")}<br><a href="${esc(d.playlist_url||"#")}" target="_blank" rel="noopener">Open playlist ↗</a></td><td>${d.is_open?'<span class="pill">Open</span>':'<span class="pill">Closed</span>'}</td><td><div class="actions"><button class="btn secondary" onclick="editDay('${esc(d.id)}')">Edit</button><button class="btn danger" onclick="deleteRow('round_days','${esc(d.id)}')">Delete</button></div></td></tr>`}).join("")||'<tr><td colspan="6" class="empty">No event days yet</td></tr>';
+ $("dayRows").innerHTML=days.map(d=>{const r=rounds.find(x=>String(x.id)===String(d.round_id));return `<tr><td>${esc(r?.round_number||"—")}</td><td>Day ${esc(d.day_number)}</td><td>${esc(d.event_date||"")}</td><td><b>1.</b> ${esc(d.playlist_title||"")}<br><a href="${esc(d.playlist_url||"#")}" target="_blank" rel="noopener">Open playlist 1 ↗</a>${d.playlist2_url?`<br><b>2.</b> ${esc(d.playlist2_title||"Playlist 2")}<br><a href="${esc(d.playlist2_url)}" target="_blank" rel="noopener">Open playlist 2 ↗</a>`:""}</td><td>${d.is_open?'<span class="pill">Open</span>':'<span class="pill">Closed</span>'}</td><td><div class="actions"><button class="btn secondary" onclick="editDay('${esc(d.id)}')">Edit</button><button class="btn danger" onclick="deleteRow('round_days','${esc(d.id)}')">Delete</button></div></td></tr>`}).join("")||'<tr><td colspan="6" class="empty">No event days yet</td></tr>';
 }
 function renderCards(){
- $("cardRows").innerHTML=cards.map(c=>{const r=rounds.find(x=>String(x.id)===String(c.round_id));const src=c.front_image_url||c.front_image||"";return `<tr><td>${src?`<img src="${esc(src)}" alt="">`:"—"}</td><td>${esc(c.card_name||c.name||"")}</td><td>${esc(c.category||"")}</td><td>${esc(r?.round_number||"—")}</td><td><div class="actions"><button class="btn secondary" onclick="editCard('${esc(c.id)}')">Edit</button><button class="btn danger" onclick="deleteRow('cards','${esc(c.id)}')">Delete</button></div></td></tr>`}).join("")||'<tr><td colspan="5" class="empty">No cards yet</td></tr>';
+ $("cardRows").innerHTML=cards.map(c=>{const src=c.front_image_url||c.front_image||"";return `<tr><td>${src?`<img src="${esc(src)}" alt="">`:"—"}</td><td>${esc(c.card_name||c.name||"")}</td><td>${esc(c.category||"")}</td><td>Shared deck</td><td><div class="actions"><button class="btn secondary" onclick="editCard('${esc(c.id)}')">Edit</button><button class="btn danger" onclick="deleteRow('cards','${esc(c.id)}')">Delete</button></div></td></tr>`}).join("")||'<tr><td colspan="5" class="empty">No cards yet</td></tr>';
 }
 $("saveRound").addEventListener("click",async()=>{
   try{
@@ -180,11 +180,11 @@ $("newRound").addEventListener("click",resetRound);
 function resetRound(){$("roundId").value="";$("roundNumber").value=rounds.length+1;$("roundName").value="";$("roundActive").value="true";$("roundNotes").value="";}
 window.editRound=id=>{const r=rounds.find(x=>String(x.id)===String(id));if(!r)return;$("roundId").value=r.id;$("roundNumber").value=r.round_number;$("roundName").value=r.title||"";$("roundActive").value=String(!!r.is_active);$("roundNotes").value=r.notes||"";window.scrollTo({top:0,behavior:"smooth"});};
 $("saveDay").addEventListener("click",async()=>{
- try{const id=$("dayId").value;const row={round_id:$("dayRound").value,day_number:Number($("dayNumber").value),event_date:$("eventDate").value,playlist_title:$("playlistTitle").value.trim(),playlist_url:$("playlistUrl").value.trim(),is_open:$("dayOpen").value==="true"};if(!row.round_id||!row.event_date||!row.playlist_url)throw Error("กรอก Round, วันที่ และ Playlist URL ให้ครบ");const q=id?sb.from(TABLES.days).update(row).eq("id",id):sb.from(TABLES.days).insert(row);const {error}=await q;if(error)throw error;status("mainStatus","บันทึกวันกิจกรรมแล้ว","ok");resetDay();await refreshAll();}catch(e){status("mainStatus",e.message,"error");}
+ try{const id=$("dayId").value;const row={round_id:$("dayRound").value,day_number:Number($("dayNumber").value),event_date:$("eventDate").value,playlist_title:$("playlistTitle").value.trim(),playlist_url:$("playlistUrl").value.trim(),playlist2_title:$("playlist2Title").value.trim()||null,playlist2_url:$("playlist2Url").value.trim()||null,is_open:$("dayOpen").value==="true"};if(!row.round_id||!row.event_date||!row.playlist_url)throw Error("กรอก Round, วันที่ และ Playlist 1 URL ให้ครบ");if(row.playlist2_url&&!row.playlist2_title)throw Error("กรอกชื่อ Playlist 2 ด้วย");const q=id?sb.from(TABLES.days).update(row).eq("id",id):sb.from(TABLES.days).insert(row);const {error}=await q;if(error)throw error;status("mainStatus","บันทึกวันกิจกรรมแล้ว","ok");resetDay();await refreshAll();}catch(e){status("mainStatus",e.message,"error");}
 });
 $("newDay").addEventListener("click",resetDay);
-function resetDay(){$("dayId").value="";$("dayNumber").value="1";$("eventDate").value="";$("playlistTitle").value="Spotify streaming for Insomnia";$("playlistUrl").value="https://open.spotify.com/playlist/1VLc055dp3O5k3UMdzHiIK";$("dayOpen").value="true";}
-window.editDay=id=>{const d=days.find(x=>String(x.id)===String(id));if(!d)return;$("dayId").value=d.id;$("dayRound").value=d.round_id;$("dayNumber").value=d.day_number;$("eventDate").value=d.event_date;$("playlistTitle").value=d.playlist_title||"";$("playlistUrl").value=d.playlist_url||"";$("dayOpen").value=String(!!d.is_open);};
+function resetDay(){$("dayId").value="";$("dayNumber").value="1";$("eventDate").value="";$("playlistTitle").value="Spotify streaming for Insomnia";$("playlistUrl").value="https://open.spotify.com/playlist/1VLc055dp3O5k3UMdzHiIK";$("playlist2Title").value="";$("playlist2Url").value="";$("dayOpen").value="true";}
+window.editDay=id=>{const d=days.find(x=>String(x.id)===String(id));if(!d)return;$("dayId").value=d.id;$("dayRound").value=d.round_id;$("dayNumber").value=d.day_number;$("eventDate").value=d.event_date;$("playlistTitle").value=d.playlist_title||"";$("playlistUrl").value=d.playlist_url||"";$("playlist2Title").value=d.playlist2_title||"";$("playlist2Url").value=d.playlist2_url||"";$("dayOpen").value=String(!!d.is_open);};
 async function uploadImage(file,folder){
  if(!file)return null;if(file.size>8*1024*1024)throw Error("รูปต้องไม่เกิน 8 MB");
  const ext=(file.name.split(".").pop()||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"");const path=`${folder}/${crypto.randomUUID()}.${ext}`;
@@ -196,9 +196,7 @@ $("saveCard").addEventListener("click",async()=>{
   if(!sb) throw Error("ยังไม่ได้เชื่อมต่อ Supabase กรุณาตรวจสอบ URL และ publishable/anon key");
   const id=$("cardId").value;
   const old=cards.find(c=>String(c.id)===String(id));
-  const roundId=$("cardRound").value;
   const cardName=$("cardName").value.trim();
-  if(!roundId) throw Error("ยังไม่มี Round ให้เลือก — เพิ่ม Round ก่อน");
   if(!cardName) throw Error("กรอกชื่อการ์ดก่อนบันทึก");
   const frontFile=$("frontImage").files[0];
   const backFile=$("backImage").files[0];
@@ -209,7 +207,7 @@ $("saveCard").addEventListener("click",async()=>{
   saveBtn.textContent="Saving…";
   const front=await uploadImage(frontFile,"front");
   const back=await uploadImage(backFile,"back");
-  const row={round_id:roundId,category:$("cardCategory").value,card_name:cardName,card_number:$("cardNumber").value?Number($("cardNumber").value):null,fortune_text:$("fortune").value.trim(),front_image_url:front||old?.front_image_url||old?.front_image||null,back_image_url:back||old?.back_image_url||old?.back_image||null};
+  const row={round_id:null,category:$("cardCategory").value,card_name:cardName,card_number:$("cardNumber").value?Number($("cardNumber").value):null,fortune_text:$("fortune").value.trim(),front_image_url:front||old?.front_image_url||old?.front_image||null,back_image_url:back||old?.back_image_url||old?.back_image||null};
   const q=id?sb.from(TABLES.cards).update(row).eq("id",id):sb.from(TABLES.cards).insert(row);
   const {error}=await q;
   if(error) throw error;
@@ -229,7 +227,7 @@ $("saveCard").addEventListener("click",async()=>{
 });
 $("newCard").addEventListener("click",resetCard);
 function resetCard(){$("cardId").value="";$("cardName").value="";$("cardNumber").value="";$("fortune").value="";$("frontImage").value="";$("backImage").value="";}
-window.editCard=id=>{const c=cards.find(x=>String(x.id)===String(id));if(!c)return;$("cardId").value=c.id;$("cardRound").value=c.round_id;$("cardCategory").value=c.category;$("cardName").value=c.card_name||c.name||"";$("cardNumber").value=c.card_number||"";$("fortune").value=c.fortune_text||c.fortune||"";$("frontImage").value="";$("backImage").value="";};
+window.editCard=id=>{const c=cards.find(x=>String(x.id)===String(id));if(!c)return;$("cardId").value=c.id;$("cardCategory").value=c.category;$("cardName").value=c.card_name||c.name||"";$("cardNumber").value=c.card_number||"";$("fortune").value=c.fortune_text||c.fortune||"";$("frontImage").value="";$("backImage").value="";};
 window.deleteRow=async(table,id)=>{if(!confirm("ยืนยันลบรายการนี้?"))return;try{const {error}=await sb.from(table).delete().eq("id",id);if(error)throw error;status("mainStatus","ลบรายการแล้ว","ok");await refreshAll();}catch(e){status("mainStatus",e.message,"error");}};
 $("refreshCheckins").addEventListener("click",refreshCheckins);
 async function refreshCheckins(){
