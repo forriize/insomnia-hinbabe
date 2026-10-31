@@ -174,7 +174,7 @@ input[type=file]{display:none}
       </div>
       <div class="field-group">
         <label for="eventDay">Event day</label>
-        <select class="field" id="eventDay" disabled><option value="">เลือก Round ก่อน</option></select>
+        <select class="field" id="eventDay" disabled><option value="">เลือก Round</option></select>
       </div>
       <div class="field-group" id="playlistChoiceGroup" hidden>
         <label for="playlistChoice">เลือก Playlist ที่ต้องการ Check-in</label>
@@ -182,7 +182,7 @@ input[type=file]{display:none}
           <option value="1">Playlist 1</option>
           <option value="2">Playlist 2</option>
         </select>
-        <p class="notice" style="margin:7px 0 0">หากวันนี้มี 2 Playlist สามารถ Check-in แยกได้ Playlist ละ 1 ครั้ง</p>
+        <p class="notice" style="margin:7px 0 0">สามารถ Check-in แยกได้ Playlist ละ 1 ครั้ง</p>
       </div>
       <div class="field-group">
         <label>Upload Proof</label>
@@ -400,8 +400,11 @@ function syncPlaylist() {
   const title=opt?.dataset.title||CONFIG.defaultPlaylistTitle;
   const url2=opt?.dataset.url2||"", title2=opt?.dataset.title2||"";
   const hasSecond = Boolean(url2 || title2);
+  const choice = $("playlistChoice");
+  choice.querySelector('option[value="1"]').textContent = title || "Playlist 1";
+  choice.querySelector('option[value="2"]').textContent = title2 || "Playlist 2";
   $("playlistChoiceGroup").hidden = !hasSecond;
-  $("playlistChoice").value = "1";
+  choice.value = "1";
   $("playlistChoice").querySelector('option[value="2"]').disabled = !hasSecond;
   $("playlistTitle").textContent=title; $("playlistUrl").textContent=url||"Spotify playlist";
   $("openSpotify").onclick=()=>{if(url)window.open(url,"_blank","noopener,noreferrer");else setStatus("checkinStatus","ยังไม่ได้ตั้งค่า Playlist URL สำหรับวันนี้","info");};
