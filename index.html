@@ -975,10 +975,15 @@ async function drawCollectionPNG() {
       while(last&&ctx.measureText(last+"…").width>w)last=Array.from(last).slice(0,-1).join("");
       lines[maxLines-1]=last+"…";
     }
+    const textAreaTop=y-24;
+    const textAreaCenterY=textAreaTop+h/2;
     const blockH=lines.length*lineH;
-    const textAreaCenterY=y+h/2-22;
-    let lineY=textAreaCenterY-blockH/2+lineH/2;
+    const metrics=ctx.measureText("ก้");
+    const glyphOffset=((metrics.actualBoundingBoxAscent||14)-(metrics.actualBoundingBoxDescent||4))/2;
+    let lineY=textAreaCenterY-blockH/2+lineH/2+glyphOffset;
+    ctx.textBaseline="alphabetic";
     for(const row of lines){ctx.fillText(row,x+w/2,lineY);lineY+=lineH;}
+    ctx.textBaseline="middle";
     ctx.restore();
   }
 
@@ -1024,10 +1029,14 @@ async function drawCollectionPNG() {
       wrapFortune(card.fortune_text||card.fortune||card.description||"",x+18,iy+ih+91,w-36,fortuneH-10);
     }else{
       drawCuteLock(ix+iw/2,iy+ih/2,1.15);
-      ctx.fillStyle="#ffffff";ctx.font='bold 20px \"IBM Plex Sans Thai\",sans-serif';
-      ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("LOCKED",x+w/2,iy+ih+119);
-      ctx.fillStyle="#bfe5ff";ctx.font='15px \"IBM Plex Sans Thai\",sans-serif';
-      ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("ยังไม่ได้รับการ์ด",x+w/2,iy+ih+151);
+      const lockedAreaTop=iy+ih+91;
+      const lockedAreaHeight=fortuneH-10;
+      const lockedCenter=lockedAreaTop+lockedAreaHeight/2;
+      ctx.textAlign="center";ctx.textBaseline="middle";
+      ctx.fillStyle="#ffffff";ctx.font='bold 20px "IBM Plex Sans Thai",sans-serif';
+      ctx.fillText("LOCKED",x+w/2,lockedCenter-14);
+      ctx.fillStyle="#bfe5ff";ctx.font='15px "IBM Plex Sans Thai",sans-serif';
+      ctx.fillText("ยังไม่ได้รับการ์ด",x+w/2,lockedCenter+14);
       ctx.textBaseline="alphabetic";
     }
   }
