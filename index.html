@@ -969,7 +969,8 @@ async function drawCollectionPNG() {
       lines[maxLines-1]=last+"…";
     }
     const blockH=lines.length*lineH;
-    let lineY=y+h/2-blockH/2+lineH/2;
+    const textAreaCenterY=y+h/2-22;
+    let lineY=textAreaCenterY-blockH/2+lineH/2;
     for(const row of lines){ctx.fillText(row,x+w/2,lineY);lineY+=lineH;}
     ctx.restore();
   }
