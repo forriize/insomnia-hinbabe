@@ -321,7 +321,7 @@ input[type=file]{display:none}
         <h2 class="section-title">My Collection</h2>
         <div class="collection-total" id="collectionTotal">0 / 12 cards</div>
       </div>
-      <div class="collection-list" id="collectionList"><div class="empty">กรอก Twitter account เพื่อดู Collection</div></div>
+      <div class="collection-list" id="collectionList"><div class="empty">กรอก X / Twitter account เพื่อดู Collection</div></div>
       <button class="btn btn-dark btn-full download" id="downloadBtn" type="button">⇩ Download Card Collection</button>
       <div class="status" id="collectionStatus" role="status" aria-live="polite"></div>
     </section>
@@ -465,7 +465,7 @@ function renderRoundCollection(round,index){
   const compact=Number(round.round_number||index+1)!==1;
   if(!compact && meta.roundDays.length){
     const displayDays=[...meta.roundDays];
-    if(displayDays.length<2){
+     if(displayDays.length<2){
       const first=displayDays[0]||{};
       let nextDate="";
       if(first.event_date){const dt=new Date(`${first.event_date}T12:00:00`);if(!Number.isNaN(dt.getTime())){dt.setDate(dt.getDate()+1);nextDate=dt.toISOString().slice(0,10);}}
@@ -938,26 +938,38 @@ async function drawCollectionPNG() {
     roundedRect(ctx,x-8,y-24,w+16,h,12,"rgba(4,28,58,.42)","rgba(183,226,255,.22)");
     ctx.beginPath();ctx.rect(x,y-18,w,h-8);ctx.clip();
     ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillStyle="#f0f8ff";ctx.font='500 17px "IBM Plex Sans Thai",sans-serif';
-    const raw=String(text||"").replace(/\s+/g," ").trim();
-    let tokens=[];
-    try { if(typeof Intl!="undefined"&&Intl.Segmenter){tokens=[...new Intl.Segmenter("th",{granularity:"word"}).segment(raw)].map(v=>v.segment);} }
-    catch(_) {}
-    if(!tokens.length) tokens=Array.from(raw);
-    const lines=[];let line="";const lineH=26,maxLines=Math.max(1,Math.floor((h-18)/lineH));
-    for(const token of tokens){
-      const candidate=line+token;
-      if(ctx.measureText(candidate).width>w&&line){
-        lines.push(line.trim());line=token.trimStart();
-        if(lines.length>=maxLines)break;
-      }else line=candidate;
+
+    const paragraphs=String(text||"").replace(/\r\n?/g,"\n").split("\n");
+    const lines=[];
+    const segment=(value)=>{
+      if(!value){lines.push("");return;}
+      let tokens=[];
+      try {
+        if(typeof Intl!="undefined"&&Intl.Segmenter){
+          tokens=[...new Intl.Segmenter("th",{granularity:"word"}).segment(value)].map(v=>v.segment);
+        }
+      } catch(_) {}
+      if(!tokens.length)tokens=Array.from(value);
+      let line="";
+      for(const token of tokens){
+        const candidate=line+token;
+        if(ctx.measureText(candidate).width>w&&line){lines.push(line.trimEnd());line=token.trimStart();}
+        else line=candidate;
+      }
+      if(line||!lines.length)lines.push(line.trimEnd());
+    };
+    paragraphs.forEach((paragraph)=>segment(paragraph));
+
+    const lineH=26;
+    const maxLines=Math.max(1,Math.floor((h-18)/lineH));
+    if(lines.length>maxLines){
+      lines.length=maxLines;
+      let last=lines[maxLines-1]||"";
+      while(last&&ctx.measureText(last+"…").width>w)last=Array.from(last).slice(0,-1).join("");
+      lines[maxLines-1]=last+"…";
     }
-    if(line&&lines.length<maxLines)lines.push(line.trim());
-    if(lines.length===maxLines&&tokens.length){
-      const last=lines.length-1;let clipped=lines[last];
-      while(clipped&&ctx.measureText(clipped+"…").width>w)clipped=Array.from(clipped).slice(0,-1).join("");
-      lines[last]=clipped+"…";
-    }
-    const blockH=lines.length*lineH;let lineY=y+h/2-blockH/2+lineH/2;
+    const blockH=lines.length*lineH;
+    let lineY=y+h/2-blockH/2+lineH/2;
     for(const row of lines){ctx.fillText(row,x+w/2,lineY);lineY+=lineH;}
     ctx.restore();
   }
