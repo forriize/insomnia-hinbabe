@@ -1041,16 +1041,6 @@ async function drawCollectionPNG() {
         ctx.textAlign="left";ctx.fillStyle="#f5fbff";ctx.font='bold 22px "IBM Plex Sans Thai",sans-serif';
         const dayLabel=day?`DAY ${d+1} · ${dateLabel(day.event_date)||day.event_date}`:`DAY ${d+1}`;
         ctx.fillText(dayLabel,pad+24,rowY+26);
-        if(day){
-          const names=[day.playlist_title,day.playlist2_title].filter(Boolean);
-          const rightEdge=W-pad-24, maxPillW=Math.min(430,(W-2*pad-390)/2);
-          if(names.length===1){const pw=Math.min(maxPillW,ctx.measureText(names[0]).width+28);drawPill(names[0],rightEdge-pw,rowY+2,pw);}
-          else if(names.length>1){
-            const pillW=Math.min(maxPillW,ctx.measureText(names[0]).width+28,ctx.measureText(names[1]).width+28);
-            drawPill(names[0],rightEdge-pillW,rowY+2,pillW);
-            drawPill(names[1],rightEdge-pillW,rowY+43,pillW);
-          }
-        }
         const dayNo=Number(day?.day_number||d+1);
         let dayCards=owned.filter(c=>Number(c.day_number||0)===dayNo);
         if(!dayCards.length && owned.some(c=>!c.day_number))dayCards=owned.filter(c=>!c.day_number).slice(d*4,d*4+4);
@@ -1063,7 +1053,7 @@ async function drawCollectionPNG() {
     roundedRect(ctx,pad,y,W-pad*2,panelH,22,"rgba(107,177,231,.15)","rgba(190,230,255,.75)");
     ctx.textAlign="left";ctx.fillStyle="#ffffff";ctx.font='bold 34px "IBM Plex Sans Thai",sans-serif';
     ctx.fillText(round.title||"",pad+24,y+46);
-    const labels=[...meta.roundDays.map(d=>dateLabel(d.event_date)||d.event_date),...meta.playlistNames];
+    const labels=meta.roundDays.map(d=>dateLabel(d.event_date)||d.event_date);
     let mx=W-pad-24;
     for(const label of labels.reverse()){ctx.font='bold 15px "IBM Plex Sans Thai",sans-serif';const width=Math.min(300,ctx.measureText(label).width+28);mx-=width;drawPill(label,mx,y+17,width);mx-=7;}
     const totalW=cols*cardW+(cols-1)*gap,startX=(W-totalW)/2;
@@ -1082,7 +1072,7 @@ async function drawCollectionPNG() {
       roundedRect(ctx,panelX,panelY,halfW,panelH,22,"rgba(107,177,231,.15)","rgba(190,230,255,.75)");
       ctx.textAlign="left";ctx.fillStyle="#ffffff";ctx.font='bold 29px \"IBM Plex Sans Thai\",sans-serif';
       ctx.fillText(round.title||"",panelX+20,panelY+43);
-      const labels=[...meta.roundDays.map(d=>dateLabel(d.event_date)||d.event_date),...meta.playlistNames];
+      const labels=meta.roundDays.map(d=>dateLabel(d.event_date)||d.event_date);
       ctx.textAlign="left";let px=panelX+20,py=panelY+55;
       for(const label of labels){
         const width=drawPill(label,px,py,halfW-40);
