@@ -169,8 +169,20 @@ input[type=file]{display:none}
         <button class="btn btn-dark" id="openSpotify2" type="button" style="padding:10px 13px;font-size:12px;white-space:nowrap">Open ↗</button>
       </div>
       <div class="field-group">
+        <label for="eventRound">Round</label>
+        <select class="field" id="eventRound"><option value="">เลือก Round</option></select>
+      </div>
+      <div class="field-group">
         <label for="eventDay">Event day</label>
-        <select class="field" id="eventDay"><option value="">เลือกวันที่</option></select>
+        <select class="field" id="eventDay" disabled><option value="">เลือก Round ก่อน</option></select>
+      </div>
+      <div class="field-group" id="playlistChoiceGroup" hidden>
+        <label for="playlistChoice">เลือก Playlist ที่ต้องการ Check-in</label>
+        <select class="field" id="playlistChoice">
+          <option value="1">Playlist 1</option>
+          <option value="2">Playlist 2</option>
+        </select>
+        <p class="notice" style="margin:7px 0 0">หากวันนี้มี 2 Playlist สามารถ Check-in แยกได้ Playlist ละ 1 ครั้ง</p>
       </div>
       <div class="field-group">
         <label>Upload Proof</label>
@@ -181,7 +193,7 @@ input[type=file]{display:none}
               <path d="M32 51V30m0 0-8 8m8-8 8 8" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </span><span class="upload-main" id="uploadMain">แนบภาพหลักฐานการ Save Playlist</span>
-          <span class="upload-sub" id="uploadSub">รองรับภาพ Spotify ที่แคปหรือครอปมาได้</span>
+          <span class="upload-sub" id="uploadSub">แคปหน้าจอ Spotify playlist ให้เห็นชื่อ playlist และปุ่มกดเซฟ</span>
           <img id="proofPreview" class="preview" alt="Proof preview" hidden>
         </label>
         <input id="proofInput" type="file" accept="image/png,image/jpeg,image/webp">
@@ -197,7 +209,7 @@ input[type=file]{display:none}
         <div class="collection-total" id="collectionTotal">0 / 12 cards</div>
       </div>
       <div class="collection-list" id="collectionList"><div class="empty">กรอก Twitter account เพื่อดู Collection</div></div>
-      <button class="btn btn-dark btn-full download" id="downloadBtn" type="button">⇩ Download Collection PNG</button>
+      <button class="btn btn-dark btn-full download" id="downloadBtn" type="button">⇩ Download Card Collection</button>
       <div class="status" id="collectionStatus" role="status" aria-live="polite"></div>
     </section>
   </main>
@@ -270,8 +282,8 @@ const SUPABASE_ANON_KEY = "sb_publishable_1eDE6vDrLVNojD4oS0Rqww_XQ_Y9EoH";
 /* event / Edge Function */
 const CONFIG = {
   currentRoundId: null,
-  defaultPlaylistUrl: "https://open.spotify.com/playlist/1VLc055dp3O5k3UMdzHiIK",
-  defaultPlaylistTitle: "Today Spotify playlist",
+  defaultPlaylistUrl: "Spotify playlist",
+  defaultPlaylistTitle: "Playlist 1",
   checkinFunction: "verify-checkin",
   statsFunction: "public-stats",
   roundsTable: "rounds",
@@ -319,6 +331,21 @@ function renderCollection() {
   }).join("");
   host.querySelectorAll(".mini-card").forEach(el=>el.addEventListener("click",()=>openCard(el.dataset.cardId)));
 }
+function renderEventDays(roundId) {
+  const select = $("eventDay");
+  const roundDays = days
+    .filter(x => String(x.round_id) === String(roundId) && x.is_open !== false)
+    .sort((a,b) => String(a.event_date||"").localeCompare(String(b.event_date||"")));
+  select.innerHTML = '<option value="">เลือกวันที่</option>' + roundDays.map((x,i) =>
+    `<option value="${esc(x.id)}" data-url="${esc(x.playlist_url||"")}" data-title="${esc(x.playlist_title||"Today's Playlist")}" data-url2="${esc(x.playlist2_url||"")}" data-title2="${esc(x.playlist2_title||"")}" data-date="${esc(x.event_date||"")}">Day ${esc(x.day_number ?? i+1)}${x.event_date?" · "+esc(x.event_date):""}</option>`
+  ).join("");
+  select.disabled = roundDays.length === 0;
+  if (!roundDays.length) {
+    select.innerHTML = '<option value="">ไม่มีวันที่เปิดให้ Check-in ใน Round นี้</option>';
+  }
+  syncPlaylist();
+}
+
 async function loadSetup() {
   if(!sb) { setStatus("checkinStatus","เติม Supabase URL และ anon key ใน CONFIG ก่อนใช้งานจริง","info"); return; }
   try {
@@ -328,9 +355,22 @@ async function loadSetup() {
     ]);
     if(r.error) throw r.error; if(d.error) throw d.error;
     rounds=r.data||[]; days=d.data||[];
-    if(!CONFIG.currentRoundId && rounds.length) CONFIG.currentRoundId=rounds.find(x=>x.is_active)?.id || rounds[0].id;
-    const roundDays=days.filter(x=>(x.is_open !== false));
-    $("eventDay").innerHTML='<option value="">เลือกวันที่</option>'+roundDays.map((x,i)=>`<option value="${esc(x.id)}" data-url="${esc(x.playlist_url||"")}" data-title="${esc(x.playlist_title||"Today's Playlist")}" data-url2="${esc(x.playlist2_url||"")}" data-title2="${esc(x.playlist2_title||"")}" data-date="${esc(x.event_date||"")}">Day ${esc(x.day_number ?? i+1)}${x.event_date?" · "+esc(x.event_date):""}</option>`).join("");
+    const roundSelect = $("eventRound");
+    const availableRounds = rounds.filter(round =>
+      days.some(day => String(day.round_id) === String(round.id) && day.is_open !== false)
+    );
+    roundSelect.innerHTML = '<option value="">เลือก Round</option>' + availableRounds.map(round =>
+      `<option value="${esc(round.id)}">Round ${esc(round.round_number)} · ${esc(round.title||"")}</option>`
+    ).join("");
+    const preferredRound = availableRounds.find(x => x.is_active) || availableRounds[0];
+    if (preferredRound) {
+      roundSelect.value = preferredRound.id;
+      CONFIG.currentRoundId = preferredRound.id;
+      renderEventDays(preferredRound.id);
+    } else {
+      $("eventDay").innerHTML = '<option value="">ยังไม่มี Round ที่เปิดให้ Check-in</option>';
+      $("eventDay").disabled = true;
+    }
     await loadStats(); await loadCollection();
   } catch(e) { setStatus("checkinStatus","เชื่อมต่อ Supabase ไม่สำเร็จ: "+(e.message||"unknown error"),"error"); }
 }
@@ -359,12 +399,21 @@ function syncPlaylist() {
   const url=opt?.dataset.url||CONFIG.defaultPlaylistUrl;
   const title=opt?.dataset.title||CONFIG.defaultPlaylistTitle;
   const url2=opt?.dataset.url2||"", title2=opt?.dataset.title2||"";
+  const hasSecond = Boolean(url2 || title2);
+  $("playlistChoiceGroup").hidden = !hasSecond;
+  $("playlistChoice").value = "1";
+  $("playlistChoice").querySelector('option[value="2"]').disabled = !hasSecond;
   $("playlistTitle").textContent=title; $("playlistUrl").textContent=url||"Spotify playlist";
   $("openSpotify").onclick=()=>{if(url)window.open(url,"_blank","noopener,noreferrer");else setStatus("checkinStatus","ยังไม่ได้ตั้งค่า Playlist URL สำหรับวันนี้","info");};
   $("playlistBlock2").hidden=!(url2||title2);
   $("playlistTitle2").textContent=title2||"Playlist 2"; $("playlistUrl2").textContent=url2||"Spotify playlist";
   $("openSpotify2").onclick=()=>{if(url2)window.open(url2,"_blank","noopener,noreferrer");else setStatus("checkinStatus","ยังไม่ได้ตั้งค่า Playlist 2 URL สำหรับวันนี้","info");};
 }
+$("eventRound").addEventListener("change", () => {
+  CONFIG.currentRoundId = $("eventRound").value || null;
+  renderEventDays(CONFIG.currentRoundId);
+  clearStatus("checkinStatus");
+});
 $("eventDay").addEventListener("change",syncPlaylist);
 $("username").addEventListener("change",loadCollection);
 $("username").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();loadCollection();}});
@@ -396,7 +445,9 @@ $("proofInput").addEventListener("change",e=>{
 let pendingProofConfirmation = false;
 function selectedPlaylistTitles(){
   const opt=$("eventDay").selectedOptions[0];
-  return [(opt?.dataset.title || CONFIG.defaultPlaylistTitle || "").trim(),(opt?.dataset.title2 || "").trim()].filter(Boolean);
+  const slot = Number($("playlistChoice").value || 1);
+  const title = slot === 2 ? opt?.dataset.title2 : opt?.dataset.title;
+  return [String(title || (slot === 1 ? CONFIG.defaultPlaylistTitle : "")).trim()].filter(Boolean);
 }
 function normalizeOcrText(value){
   return String(value||"").toLowerCase()
@@ -473,6 +524,7 @@ async function submitCheckin(){
     const fd=new FormData();
     fd.append("username",username());
     fd.append("round_day_id",$("eventDay").value);
+    fd.append("playlist_number",$("playlistChoice").value || "1");
     fd.append("proof",proofFile,proofFile.name);
     fd.append("ocr_text",lastProofOcrText);
     fd.append("manual_confirmed",pendingProofConfirmation?"true":"false");
@@ -488,7 +540,7 @@ async function submitCheckin(){
     $("proofInput").value="";proofFile=null;pendingProofConfirmation=false;
     $("proofPreview").hidden=true;
     $("uploadMain").textContent="แนบภาพหลักฐานการ Save Playlist";
-    if($("uploadSub")) $("uploadSub").textContent="รองรับภาพ Spotify ที่แคปหรือครอปมาได้";
+    if($("uploadSub")) $("uploadSub").textContent="แคปหน้าจอ Spotify playlist ให้เห็นชื่อ playlist และปุ่มกดเซฟ";
     await loadCollection();await loadStats();
   }catch(e){
     setStatus("checkinStatus",e.message||"เกิดข้อผิดพลาด กรุณาลองใหม่","error");
@@ -505,6 +557,12 @@ $("checkinBtn").addEventListener("click", async () => {
   if (!$("eventDay").value) {
     setStatus("checkinStatus", "เลือก Event day ก่อน Check-in", "error");
     $("eventDay").focus();
+    return;
+  }
+  const selectedOption = $("eventDay").selectedOptions[0];
+  const selectedSlot = Number($("playlistChoice").value || 1);
+  if (selectedSlot === 2 && !selectedOption?.dataset.url2 && !selectedOption?.dataset.title2) {
+    setStatus("checkinStatus", "วันนี้ไม่มี Playlist 2 ให้ Check-in", "error");
     return;
   }
   if (!proofFile) {
