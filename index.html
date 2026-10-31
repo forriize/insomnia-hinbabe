@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--forest:#080d2b;--forest2:#263b79;--cream:#f2efff;--paper:#fbf9ff;--ink:#24264b;--muted:#797fa9;--gold:#c9b8ff;--line:#c5c5f1;--pink:#d9c9ff;--sage:#a8c9f5;--shadow:0 18px 55px #02051f70}
 *{box-sizing:border-box}
@@ -890,12 +891,14 @@ function wrapText(ctx,text,x,y,maxWidth,lineHeight,maxLines=8) {
 async function drawCollectionPNG() {
  try {
     await Promise.all([
-      document.fonts.load('500 17px "IBM Plex Sans Thai"', "คำทำนายภาษาไทย"),
-      document.fonts.load('bold 20px "IBM Plex Sans Thai"', "ทีมพี่หิน ทีมเบ้บ"),
-      document.fonts.load('58px Georgia', "MY CARD COLLECTION")
+      document.fonts.load('400 15px "Noto Sans Thai"', "ยังไม่ได้รับการ์ด"),
+      document.fonts.load('500 17px "Noto Sans Thai"', "คำทำนายภาษาไทย"),
+      document.fonts.load('600 20px "Noto Sans Thai"', "ทีมพี่หิน ทีมเบ้บ"),
+      document.fonts.load('700 34px "Noto Sans Thai"', "MY CARD COLLECTION")
     ]);
     await document.fonts.ready;
-  } catch (_) {}
+  } catch (_) {
+     }
   if(!username()){setStatus("collectionStatus","กรอก X / Twitter account ก่อนดาวน์โหลด","error");$("username").focus();return;}
   const orderedRounds=[...rounds].sort((a,b)=>Number(a.round_number||0)-Number(b.round_number||0));
   const visible=orderedRounds.slice(0,3).map((round,index)=>({round,index,meta:getRoundMeta(round)}));
@@ -925,13 +928,13 @@ async function drawCollectionPNG() {
   ctx.textAlign="center";ctx.fillStyle="#f3f9ff";
   ctx.font="58px Georgia,serif";ctx.fillText("MY CARD COLLECTION",W/2,100);
   const accountText="@"+username();
-  ctx.font='bold 25px \"IBM Plex Sans Thai\",sans-serif';
+  ctx.font='bold 25px \"Noto Sans Thai\",sans-serif';
   const accountW=Math.max(210,ctx.measureText(accountText).width+58);
   roundedRect(ctx,(W-accountW)/2,125,accountW,52,25,"rgba(5,24,54,.78)","#a9ddff");
   ctx.fillStyle="#ffffff";ctx.fillText(accountText,W/2,159);
 
   function drawPill(text,x,y,maxWidth){
-    ctx.font='bold 15px \"IBM Plex Sans Thai\",sans-serif';
+    ctx.font='bold 15px \"Noto Sans Thai\",sans-serif';
     const w=Math.min(maxWidth,ctx.measureText(text).width+26);
     roundedRect(ctx,x,y,w,34,16,"rgba(3,20,48,.88)","#8ecfff");
     ctx.textAlign="center";ctx.fillStyle="#f3f9ff";
@@ -944,43 +947,50 @@ async function drawCollectionPNG() {
     ctx.save();
     roundedRect(ctx,x-8,y-24,w+16,h,12,"rgba(4,28,58,.42)","rgba(183,226,255,.22)");
     ctx.beginPath();ctx.rect(x,y-24,w,h);ctx.clip();
-    ctx.direction="ltr";
-    ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillStyle="#f0f8ff";ctx.font='500 17px "IBM Plex Sans Thai",sans-serif';
 
-    const paragraphs=String(text||"").replace(/\r\n?/g,"\n").split("\n");
+    ctx.direction="ltr";
+    ctx.textAlign="center";
+    ctx.textBaseline="alphabetic";
+    ctx.fillStyle="#f0f8ff";
+    ctx.font='500 17px "Noto Sans Thai",sans-serif';
+
+   const paragraphs=String(text||"").replace(/\r\n?/g,"\n").split("\n");
     const lines=[];
-    const segment=(value)=>{
-      if(!value){lines.push("");return;}
-      let tokens=[];
-      try {
-        if(typeof Intl!="undefined"&&Intl.Segmenter){
-          tokens=[...new Intl.Segmenter("th",{granularity:"word"}).segment(value)].map(v=>v.segment);
-        }
-      } catch(_) {}
-      if(!tokens.length)tokens=Array.from(value);
+    for(const paragraph of paragraphs){
+      if(!paragraph){ lines.push(""); continue; }
       let line="";
-      for(const token of tokens){
-        const candidate=line+token;
-        if(ctx.measureText(candidate).width>w&&line){lines.push(line.trimEnd());line=token.trimStart();}
-        else line=candidate;
+      for(const char of Array.from(paragraph)){
+        const candidate=line+char;
+        if(line && ctx.measureText(candidate).width>w){
+          lines.push(line);
+          line=char;
+        }else{
+          line=candidate;
+        }
       }
-      if(line||!lines.length)lines.push(line.trimEnd());
-    };
-    paragraphs.forEach((paragraph)=>segment(paragraph));
+      if(line || !lines.length) lines.push(line);
+    }
 
     const lineH=26;
-    const maxLines=Math.max(1,Math.floor((h-18)/lineH));
+    const maxLines=Math.max(1,Math.floor((h-20)/lineH));
     if(lines.length>maxLines){
       lines.length=maxLines;
       let last=lines[maxLines-1]||"";
-      while(last&&ctx.measureText(last+"…").width>w)last=Array.from(last).slice(0,-1).join("");
+      while(last && ctx.measureText(last+"…").width>w){
+        last=Array.from(last).slice(0,-1).join("");
+      }
       lines[maxLines-1]=last+"…";
     }
-    const textAreaCenterY=(y-24)+h/2;
-    let lineY=textAreaCenterY-((lines.length-1)*lineH)/2;
-    ctx.textBaseline="middle";
-    ctx.textAlign="center";
-    for(const row of lines){ctx.fillText(row,x+w/2,lineY);lineY+=lineH;}
+
+    const blockHeight=(lines.length-1)*lineH;
+    const firstBaseline=(y-24)+(h-blockHeight)/2+6;
+    ctx.textAlign="left";
+    for(let i=0;i<lines.length;i++){
+      const line=lines[i];
+      const lineWidth=ctx.measureText(line).width;
+      const lineX=x+(w-lineWidth)/2;
+      ctx.fillText(line,lineX,firstBaseline+i*lineH);
+    }
     ctx.restore();
   }
 
@@ -1017,11 +1027,11 @@ async function drawCollectionPNG() {
         ctx.fillText(categorySymbol(card.category),ix+iw/2,iy+ih/2);
       }
       const title=String(card.card_name||card.name||card.category||"").toUpperCase();
-      ctx.textAlign="center";ctx.fillStyle="#ffffff";ctx.font='bold 20px \"IBM Plex Sans Thai\",sans-serif';
+      ctx.textAlign="center";ctx.fillStyle="#ffffff";ctx.font='bold 20px \"Noto Sans Thai\",sans-serif';
       let shown=title;
       while(ctx.measureText(shown).width>w-28&&shown.length>5)shown=shown.slice(0,-2)+"…";
       ctx.fillText(shown,x+w/2,iy+ih+34);
-      ctx.fillStyle="#bfe5ff";ctx.font='15px \"IBM Plex Sans Thai\",sans-serif';
+      ctx.fillStyle="#bfe5ff";ctx.font='15px \"Noto Sans Thai\",sans-serif';
       ctx.fillText(String(card.category||"").toUpperCase(),x+w/2,iy+ih+59);
       wrapFortune(card.fortune_text||card.fortune||card.description||"",x+18,iy+ih+91,w-36,fortuneH-10);
     }else{
@@ -1029,12 +1039,34 @@ async function drawCollectionPNG() {
       const lockedAreaTop=iy+ih+91;
       const lockedAreaHeight=fortuneH-10;
       const lockedCenter=lockedAreaTop+lockedAreaHeight/2;
-      ctx.direction="ltr";ctx.textAlign="center";ctx.textBaseline="middle";
-      ctx.fillStyle="#ffffff";ctx.font='bold 20px "IBM Plex Sans Thai",sans-serif';
-      ctx.fillText("LOCKED",x+w/2,lockedCenter-14);
-      ctx.fillStyle="#bfe5ff";ctx.font='15px "IBM Plex Sans Thai",sans-serif';
-      ctx.fillText("ยังไม่ได้รับการ์ด",x+w/2,lockedCenter+14);
-      ctx.textBaseline="alphabetic";
+      ctx.direction="ltr";ctx.textAlign="center";ctx.textBaseline="alphabetic";
+      const lockedTitle="LOCKED";
+      const lockedSubtitle="ยังไม่ได้รับการ์ด";
+      const lockedGap=7;
+
+      ctx.font='bold 20px "Noto Sans Thai",sans-serif';
+      const titleMetrics=ctx.measureText(lockedTitle);
+      const titleAscent=titleMetrics.actualBoundingBoxAscent||15;
+      const titleDescent=titleMetrics.actualBoundingBoxDescent||4;
+
+      ctx.font='15px "Noto Sans Thai",sans-serif';
+      const subtitleMetrics=ctx.measureText(lockedSubtitle);
+      const subtitleAscent=subtitleMetrics.actualBoundingBoxAscent||11;
+      const subtitleDescent=subtitleMetrics.actualBoundingBoxDescent||3;
+
+      const groupHeight=titleAscent+titleDescent+lockedGap+subtitleAscent+subtitleDescent;
+      const groupTop=lockedCenter-groupHeight/2;
+      const titleBaseline=groupTop+titleAscent;
+      const subtitleBaseline=titleBaseline+titleDescent+lockedGap+subtitleAscent;
+
+      ctx.fillStyle="#ffffff";ctx.font='bold 20px "Noto Sans Thai",sans-serif';
+      const titleWidth=ctx.measureText(lockedTitle).width;
+      ctx.textAlign="left";
+      ctx.fillText(lockedTitle,x+(w-titleWidth)/2,titleBaseline);
+
+      ctx.fillStyle="#bfe5ff";ctx.font='15px "Noto Sans Thai",sans-serif';
+      const subtitleWidth=ctx.measureText(lockedSubtitle).width;
+      ctx.fillText(lockedSubtitle,x+(w-subtitleWidth)/2,subtitleBaseline);
     }
   }
 
@@ -1045,13 +1077,13 @@ async function drawCollectionPNG() {
     if(isFirst && meta.roundDays.length){
       const panelH=2*(itemH+78)+54;
       roundedRect(ctx,pad,y,W-pad*2,panelH,22,"rgba(107,177,231,.15)","rgba(190,230,255,.75)");
-      ctx.textAlign="left";ctx.fillStyle="#ffffff";ctx.font='bold 34px "IBM Plex Sans Thai",sans-serif';
+      ctx.textAlign="left";ctx.fillStyle="#ffffff";ctx.font='bold 34px "Noto Sans Thai",sans-serif';
       ctx.fillText(round.title||"",pad+24,y+46);
       const totalW=4*cardW+3*gap,startX=(W-totalW)/2;
       for(let d=0;d<2;d++){
         const day=meta.roundDays[d];
         const rowY=y+76+d*(itemH+78);
-        ctx.textAlign="left";ctx.fillStyle="#f5fbff";ctx.font='bold 22px "IBM Plex Sans Thai",sans-serif';
+        ctx.textAlign="left";ctx.fillStyle="#f5fbff";ctx.font='bold 22px "Noto Sans Thai",sans-serif';
         const dayLabel=day?`DAY ${d+1} · ${dateLabel(day.event_date)||day.event_date}`:`DAY ${d+1}`;
         ctx.fillText(dayLabel,pad+24,rowY+26);
         const dayNo=Number(day?.day_number||d+1);
@@ -1064,11 +1096,11 @@ async function drawCollectionPNG() {
     const rows=Math.ceil(slotLimit/cols);
     const panelH=rows*itemH+112;
     roundedRect(ctx,pad,y,W-pad*2,panelH,22,"rgba(107,177,231,.15)","rgba(190,230,255,.75)");
-    ctx.textAlign="left";ctx.fillStyle="#ffffff";ctx.font='bold 34px "IBM Plex Sans Thai",sans-serif';
+    ctx.textAlign="left";ctx.fillStyle="#ffffff";ctx.font='bold 34px "Noto Sans Thai",sans-serif';
     ctx.fillText(round.title||"",pad+24,y+46);
     const labels=meta.roundDays.map(d=>dateLabel(d.event_date)||d.event_date);
     let mx=W-pad-24;
-    for(const label of labels.reverse()){ctx.font='bold 15px "IBM Plex Sans Thai",sans-serif';const width=Math.min(300,ctx.measureText(label).width+28);mx-=width;drawPill(label,mx,y+17,width);mx-=7;}
+    for(const label of labels.reverse()){ctx.font='bold 15px "Noto Sans Thai",sans-serif';const width=Math.min(300,ctx.measureText(label).width+28);mx-=width;drawPill(label,mx,y+17,width);mx-=7;}
     const totalW=cols*cardW+(cols-1)*gap,startX=(W-totalW)/2;
     for(let i=0;i<slotLimit;i++){const x=startX+(i%cols)*(cardW+gap),cy=y+76+Math.floor(i/cols)*itemH;await drawCardSlot(owned[i]||null,x,cy,cardW);}
     return panelH;
@@ -1083,7 +1115,7 @@ async function drawCollectionPNG() {
       const owned=meta.roundDays.length ? collection.filter(c=>String(c.round_id)===String(round.id)) : [];
       const panelX=pad+j*(halfW+panelGap),panelY=y,panelH=itemH+108;
       roundedRect(ctx,panelX,panelY,halfW,panelH,22,"rgba(107,177,231,.15)","rgba(190,230,255,.75)");
-      ctx.textAlign="left";ctx.fillStyle="#ffffff";ctx.font='bold 29px \"IBM Plex Sans Thai\",sans-serif';
+      ctx.textAlign="left";ctx.fillStyle="#ffffff";ctx.font='bold 29px \"Noto Sans Thai\",sans-serif';
       ctx.fillText(round.title||"",panelX+20,panelY+43);
       const labels=meta.roundDays.map(d=>dateLabel(d.event_date)||d.event_date);
       ctx.textAlign="left";let px=panelX+20,py=panelY+55;
