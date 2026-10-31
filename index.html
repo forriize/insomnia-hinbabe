@@ -943,7 +943,8 @@ async function drawCollectionPNG() {
   function wrapFortune(text,x,y,w,h){
     ctx.save();
     roundedRect(ctx,x-8,y-24,w+16,h,12,"rgba(4,28,58,.42)","rgba(183,226,255,.22)");
-    ctx.beginPath();ctx.rect(x,y-18,w,h-8);ctx.clip();
+    ctx.beginPath();ctx.rect(x,y-24,w,h);ctx.clip();
+    ctx.direction="ltr";
     ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillStyle="#f0f8ff";ctx.font='500 17px "IBM Plex Sans Thai",sans-serif';
 
     const paragraphs=String(text||"").replace(/\r\n?/g,"\n").split("\n");
@@ -975,15 +976,11 @@ async function drawCollectionPNG() {
       while(last&&ctx.measureText(last+"…").width>w)last=Array.from(last).slice(0,-1).join("");
       lines[maxLines-1]=last+"…";
     }
-    const textAreaTop=y-24;
-    const textAreaCenterY=textAreaTop+h/2;
-    const blockH=lines.length*lineH;
-    const metrics=ctx.measureText("ก้");
-    const glyphOffset=((metrics.actualBoundingBoxAscent||14)-(metrics.actualBoundingBoxDescent||4))/2;
-    let lineY=textAreaCenterY-blockH/2+lineH/2+glyphOffset;
-    ctx.textBaseline="alphabetic";
-    for(const row of lines){ctx.fillText(row,x+w/2,lineY);lineY+=lineH;}
+    const textAreaCenterY=(y-24)+h/2;
+    let lineY=textAreaCenterY-((lines.length-1)*lineH)/2;
     ctx.textBaseline="middle";
+    ctx.textAlign="center";
+    for(const row of lines){ctx.fillText(row,x+w/2,lineY);lineY+=lineH;}
     ctx.restore();
   }
 
@@ -1032,7 +1029,7 @@ async function drawCollectionPNG() {
       const lockedAreaTop=iy+ih+91;
       const lockedAreaHeight=fortuneH-10;
       const lockedCenter=lockedAreaTop+lockedAreaHeight/2;
-      ctx.textAlign="center";ctx.textBaseline="middle";
+      ctx.direction="ltr";ctx.textAlign="center";ctx.textBaseline="middle";
       ctx.fillStyle="#ffffff";ctx.font='bold 20px "IBM Plex Sans Thai",sans-serif';
       ctx.fillText("LOCKED",x+w/2,lockedCenter-14);
       ctx.fillStyle="#bfe5ff";ctx.font='15px "IBM Plex Sans Thai",sans-serif';
