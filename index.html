@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#080d2b">
-<title>Stream Your Ship — #ทีมหินเบ้บ</title>
+<title>Insomnia — #ทีมพี่หิน #ทีมน้องเบ้บ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -140,8 +140,8 @@ input[type=file]{display:none}
 <body>
 <div class="shell">
   <header class="hero">
-    <h1>Stream Your Ship</h1>
-    <div class="hashtag">#ทีมหินเบ้บ</div>
+    <h1>Insomnia</h1>
+    <div class="hashtag">#ทีมพี่หิน #ทีมน้องเบ้บ</div>
     <p class="subtitle">Spotify streaming for Insomnia</p>
     <div class="flourish">— ✦ ☾ ✧ ✦ —</div>
   </header>
@@ -158,17 +158,15 @@ input[type=file]{display:none}
         <label for="username">X / Twitter account</label>
         <input class="field" id="username" type="text" placeholder="@yourusername" autocomplete="off" maxlength="50">
       </div>
-      <div class="playlist">
-        <div class="spotify" aria-label="Spotify">
-          <svg viewBox="0 0 48 48" role="img" aria-hidden="true">
-            <circle cx="24" cy="24" r="22" fill="#1ED760"/>
-            <path d="M11 18.2c9.1-2.8 19.6-1.5 27 3.1" fill="none" stroke="#073c35" stroke-width="3.4" stroke-linecap="round"/>
-            <path d="M13 24.7c7.7-2.1 16.4-1.1 22.6 2.5" fill="none" stroke="#073c35" stroke-width="3.1" stroke-linecap="round"/>
-            <path d="M15 30.7c6.2-1.5 12.9-.7 17.8 2.1" fill="none" stroke="#073c35" stroke-width="2.8" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <div class="playlist-copy"><div class="playlist-title" id="playlistTitle">Today's Playlist</div><div class="playlist-url" id="playlistUrl">Spotify playlist</div></div>
+      <div class="playlist" id="playlistBlock1">
+        <div class="spotify" aria-label="Spotify"><svg viewBox="0 0 48 48" role="img" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="#1ED760"/><path d="M11 18.2c9.1-2.8 19.6-1.5 27 3.1" fill="none" stroke="#073c35" stroke-width="3.4" stroke-linecap="round"/><path d="M13 24.7c7.7-2.1 16.4-1.1 22.6 2.5" fill="none" stroke="#073c35" stroke-width="3.1" stroke-linecap="round"/><path d="M15 30.7c6.2-1.5 12.9-.7 17.8 2.1" fill="none" stroke="#073c35" stroke-width="2.8" stroke-linecap="round"/></svg></div>
+        <div class="playlist-copy"><div class="playlist-title" id="playlistTitle">Playlist 1</div><div class="playlist-url" id="playlistUrl">Spotify playlist</div></div>
         <button class="btn btn-dark" id="openSpotify" type="button" style="padding:10px 13px;font-size:12px;white-space:nowrap">Open ↗</button>
+      </div>
+      <div class="playlist" id="playlistBlock2" hidden>
+        <div class="spotify" aria-label="Spotify"><svg viewBox="0 0 48 48" role="img" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="#1ED760"/><path d="M11 18.2c9.1-2.8 19.6-1.5 27 3.1" fill="none" stroke="#073c35" stroke-width="3.4" stroke-linecap="round"/><path d="M13 24.7c7.7-2.1 16.4-1.1 22.6 2.5" fill="none" stroke="#073c35" stroke-width="3.1" stroke-linecap="round"/><path d="M15 30.7c6.2-1.5 12.9-.7 17.8 2.1" fill="none" stroke="#073c35" stroke-width="2.8" stroke-linecap="round"/></svg></div>
+        <div class="playlist-copy"><div class="playlist-title" id="playlistTitle2">Playlist 2</div><div class="playlist-url" id="playlistUrl2">Spotify playlist</div></div>
+        <button class="btn btn-dark" id="openSpotify2" type="button" style="padding:10px 13px;font-size:12px;white-space:nowrap">Open ↗</button>
       </div>
       <div class="field-group">
         <label for="eventDay">Event day</label>
@@ -196,7 +194,7 @@ input[type=file]{display:none}
     <section class="panel collection-panel">
       <div class="collection-head">
         <h2 class="section-title">My Collection</h2>
-        <select class="round-select" id="roundSelect" aria-label="Select round"><option value="">Round</option></select>
+        <div class="collection-total" id="collectionTotal">0 / 12 cards</div>
       </div>
       <div class="collection-list" id="collectionList"><div class="empty">กรอก Twitter account เพื่อดู Collection</div></div>
       <button class="btn btn-dark btn-full download" id="downloadBtn" type="button">⇩ Download Collection PNG</button>
@@ -310,14 +308,14 @@ function renderCard(card) {
 function renderCollection() {
   const host=$("collectionList");
   if(!username()){host.innerHTML='<div class="empty">กรอก X / Twitter account เพื่อดู Collection</div>';return;}
-  const rid=$("roundSelect").value;
-  const filtered=collection.filter(x=>!rid || String(x.round_id)===String(rid));
-  if(!filtered.length){host.innerHTML='<div class="empty">ยังไม่มีการ์ดในรอบนี้</div>';return;}
+  const filtered=[...collection].sort((a,b)=>String(a.received_date||"").localeCompare(String(b.received_date||"")));
+  $("collectionTotal").textContent=`${filtered.length} / 12 cards`;
+  if(!filtered.length){host.innerHTML='<div class="empty">ยังไม่มีการ์ดใน Collection</div>';return;}
   const grouped={};
-  filtered.forEach(c=>{const day=String(c.day_number || c.day || 1);(grouped[day] ||= []).push(c);});
-  host.innerHTML=Object.keys(grouped).sort((a,b)=>Number(a)-Number(b)).map(day=>{
-    const cards=grouped[day];const date=cards[0].received_date||cards[0].checkin_date||"";
-    return `<div class="day-block"><div class="day-heading"><span class="day-name">Day ${esc(day)}</span><span class="day-date">${esc(dateLabel(date)||date)}</span></div><div class="mini-cards">${cards.map(renderCard).join("")}</div></div>`;
+  filtered.forEach(c=>{const key=String(c.round_number||c.round_id||"Collection")+"|"+String(c.day_number||c.day||1)+"|"+String(c.received_date||"");(grouped[key] ||= []).push(c);});
+  host.innerHTML=Object.entries(grouped).map(([key,cards])=>{
+    const [round,day,date]=key.split("|");
+    return `<div class="day-block"><div class="day-heading"><span class="day-name">${esc(cards[0]?.round_title||rounds.find(r=>String(r.id)===round)?.title||round)} · Day ${esc(day)}</span><span class="day-date">${esc(dateLabel(date)||date)}</span></div><div class="mini-cards">${cards.map(renderCard).join("")}</div></div>`;
   }).join("");
   host.querySelectorAll(".mini-card").forEach(el=>el.addEventListener("click",()=>openCard(el.dataset.cardId)));
 }
@@ -331,9 +329,8 @@ async function loadSetup() {
     if(r.error) throw r.error; if(d.error) throw d.error;
     rounds=r.data||[]; days=d.data||[];
     if(!CONFIG.currentRoundId && rounds.length) CONFIG.currentRoundId=rounds.find(x=>x.is_active)?.id || rounds[0].id;
-    $("roundSelect").innerHTML=rounds.map((x,i)=>`<option value="${esc(x.id)}" ${String(x.id)===String(CONFIG.currentRoundId)?"selected":""}>${esc(x.title || `Round ${x.round_number ?? i+1}`)}</option>`).join("") || '<option value="">Round</option>';
-    const roundDays=days.filter(x=>String(x.round_id)===String($("roundSelect").value || CONFIG.currentRoundId) && (x.is_open !== false));
-    $("eventDay").innerHTML='<option value="">เลือกวันที่</option>'+roundDays.map((x,i)=>`<option value="${esc(x.id)}" data-url="${esc(x.playlist_url||"")}" data-title="${esc(x.playlist_title||"Today's Playlist")}" data-date="${esc(x.event_date||"")}">Day ${esc(x.day_number ?? i+1)}${x.event_date?" · "+esc(x.event_date):""}</option>`).join("");
+    const roundDays=days.filter(x=>(x.is_open !== false));
+    $("eventDay").innerHTML='<option value="">เลือกวันที่</option>'+roundDays.map((x,i)=>`<option value="${esc(x.id)}" data-url="${esc(x.playlist_url||"")}" data-title="${esc(x.playlist_title||"Today's Playlist")}" data-url2="${esc(x.playlist2_url||"")}" data-title2="${esc(x.playlist2_title||"")}" data-date="${esc(x.event_date||"")}">Day ${esc(x.day_number ?? i+1)}${x.event_date?" · "+esc(x.event_date):""}</option>`).join("");
     await loadStats(); await loadCollection();
   } catch(e) { setStatus("checkinStatus","เชื่อมต่อ Supabase ไม่สำเร็จ: "+(e.message||"unknown error"),"error"); }
 }
@@ -351,22 +348,24 @@ async function loadStats() {
 async function loadCollection() {
   if(!sb || !username()) { collection=[];renderCollection();return; }
   try {
-    const {data,error}=await sb.from(CONFIG.userCardsTable).select("*, card:cards(*)").ilike("username",username()).order("received_date",{ascending:true});
+    const {data,error}=await sb.from(CONFIG.userCardsTable).select("*, card:cards(*), round:rounds(title,round_number)").ilike("username",username()).order("received_date",{ascending:true});
     if(error) throw error;
-    collection=(data||[]).map(x=>({...x,...(x.card||{}),id:x.card_id||x.card?.id,card_id:x.card_id,round_id:x.round_id,day_number:x.day_number||x.day,received_date:x.received_date||x.checkin_date,fortune_text:x.fortune_text||x.card?.fortune_text,front_image_url:x.front_image_url||x.card?.front_image_url||x.card?.front_image,back_image_url:x.back_image_url||x.card?.back_image_url||x.card?.back_image}));
-    const roundIds=[...new Set(collection.map(x=>String(x.round_id)))];
-    if(roundIds.length && !$("roundSelect").value) $("roundSelect").value=roundIds[0];
+    collection=(data||[]).map(x=>({...x,...(x.card||{}),id:x.card_id||x.card?.id,card_id:x.card_id,round_id:x.round_id,round_title:x.round?.title||`Round ${x.round?.round_number||""}`,round_number:x.round?.round_number,day_number:x.day_number||x.day,received_date:x.received_date||x.checkin_date,fortune_text:x.fortune_text||x.card?.fortune_text,front_image_url:x.front_image_url||x.card?.front_image_url||x.card?.front_image,back_image_url:x.back_image_url||x.card?.back_image_url||x.card?.back_image}));
     renderCollection();
   } catch(e) { setStatus("collectionStatus","โหลด Collection ไม่สำเร็จ: "+(e.message||"unknown error"),"error"); }
 }
 function syncPlaylist() {
   const opt=$("eventDay").selectedOptions[0];
-  const url=opt?.dataset.url||CONFIG.defaultPlaylistUrl, title=opt?.dataset.title||CONFIG.defaultPlaylistTitle;
-  $("playlistTitle").textContent=title;$("playlistUrl").textContent=url||"Spotify playlist";
+  const url=opt?.dataset.url||CONFIG.defaultPlaylistUrl;
+  const title=opt?.dataset.title||CONFIG.defaultPlaylistTitle;
+  const url2=opt?.dataset.url2||"", title2=opt?.dataset.title2||"";
+  $("playlistTitle").textContent=title; $("playlistUrl").textContent=url||"Spotify playlist";
   $("openSpotify").onclick=()=>{if(url)window.open(url,"_blank","noopener,noreferrer");else setStatus("checkinStatus","ยังไม่ได้ตั้งค่า Playlist URL สำหรับวันนี้","info");};
+  $("playlistBlock2").hidden=!(url2||title2);
+  $("playlistTitle2").textContent=title2||"Playlist 2"; $("playlistUrl2").textContent=url2||"Spotify playlist";
+  $("openSpotify2").onclick=()=>{if(url2)window.open(url2,"_blank","noopener,noreferrer");else setStatus("checkinStatus","ยังไม่ได้ตั้งค่า Playlist 2 URL สำหรับวันนี้","info");};
 }
 $("eventDay").addEventListener("change",syncPlaylist);
-$("roundSelect").addEventListener("change",async()=>{const rid=$("roundSelect").value;const opts=days.filter(x=>String(x.round_id)===String(rid)&&(x.is_open!==false));$("eventDay").innerHTML='<option value="">เลือกวันที่</option>'+opts.map((x,i)=>`<option value="${esc(x.id)}" data-url="${esc(x.playlist_url||"")}" data-title="${esc(x.playlist_title||"Today's Playlist")}" data-date="${esc(x.event_date||"")}">Day ${esc(x.day_number??i+1)}${x.event_date?" · "+esc(x.event_date):""}</option>`).join("");syncPlaylist();await loadCollection();});
 $("username").addEventListener("change",loadCollection);
 $("username").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();loadCollection();}});
 $("proofInput").addEventListener("change",e=>{
@@ -376,7 +375,7 @@ $("proofInput").addEventListener("change",e=>{
   if(!proofFile){
     $("proofPreview").hidden=true;
     $("uploadMain").textContent="แนบภาพหลักฐานการ Save Playlist";
-    $("uploadSub").textContent="แคปหน้าจอ Spotify Playlist ที่กด save เรียบร้อยแล้ว";
+    if($("uploadSub")) $("uploadSub").textContent="แคปหน้าจอ Spotify Playlist ที่กด save เรียบร้อยแล้ว";
     return;
   }
   if(!["image/jpeg","image/png","image/webp"].includes(proofFile.type)){
@@ -388,16 +387,16 @@ $("proofInput").addEventListener("change",e=>{
     setStatus("checkinStatus","ไฟล์ต้องมีขนาดไม่เกิน 10 MB","error");return;
   }
   $("uploadMain").textContent=proofFile.name;
-  $("uploadSub").textContent=`${(proofFile.size/1024/1024).toFixed(2)} MB · Spotify screenshot`;
+  if($("uploadSub")) $("uploadSub").textContent=`${(proofFile.size/1024/1024).toFixed(2)} MB · Spotify screenshot`;
   const reader=new FileReader();
   reader.onload=ev=>{$("proofPreview").src=ev.target.result;$("proofPreview").hidden=false;};
   reader.readAsDataURL(proofFile);clearStatus("checkinStatus");
 });
 
 let pendingProofConfirmation = false;
-function selectedPlaylistTitle(){
+function selectedPlaylistTitles(){
   const opt=$("eventDay").selectedOptions[0];
-  return (opt?.dataset.title || CONFIG.defaultPlaylistTitle || "").trim();
+  return [(opt?.dataset.title || CONFIG.defaultPlaylistTitle || "").trim(),(opt?.dataset.title2 || "").trim()].filter(Boolean);
 }
 function normalizeOcrText(value){
   return String(value||"").toLowerCase()
@@ -418,7 +417,7 @@ function titleMatchScore(expected, actual){
 async function readProofImage(file){
   if(!window.Tesseract) throw new Error("OCR library unavailable");
   const result=await Tesseract.recognize(file,"eng+tha",{
-    logger:m=>{if(m.status==="recognizing text")$("uploadSub").textContent=`กำลังอ่านภาพ ${Math.round((m.progress||0)*100)}%`;}
+    logger:m=>{if(m.status==="recognizing text")if($("uploadSub")) $("uploadSub").textContent=`กำลังอ่านภาพ ${Math.round((m.progress||0)*100)}%`;}
   });
   return (result?.data?.text||"").trim();
   
@@ -489,7 +488,7 @@ async function submitCheckin(){
     $("proofInput").value="";proofFile=null;pendingProofConfirmation=false;
     $("proofPreview").hidden=true;
     $("uploadMain").textContent="แนบภาพหลักฐานการ Save Playlist";
-    $("uploadSub").textContent="รองรับภาพ Spotify ที่แคปหรือครอปมาได้";
+    if($("uploadSub")) $("uploadSub").textContent="รองรับภาพ Spotify ที่แคปหรือครอปมาได้";
     await loadCollection();await loadStats();
   }catch(e){
     setStatus("checkinStatus",e.message||"เกิดข้อผิดพลาด กรุณาลองใหม่","error");
@@ -520,9 +519,11 @@ $("checkinBtn").addEventListener("click", async () => {
     setStatus("checkinStatus", "กำลังอ่านข้อความจากภาพ Spotify…", "info");
     lastProofOcrText = await readProofImage(proofFile);
 
-    const expected = selectedPlaylistTitle();
-    const score = titleMatchScore(expected, lastProofOcrText);
+    const expectedTitles = selectedPlaylistTitles();
+    const score = Math.max(0,...expectedTitles.map(title=>titleMatchScore(title,lastProofOcrText)));
+    const expected = expectedTitles.map((title,index)=>`${index+1}. ${title}`).join("\n");
     const greenFound = await detectGreenMark(proofFile);
+
 
     if (score >= 0.45) {
      pendingProofConfirmation = false;
@@ -646,13 +647,10 @@ function wrapText(ctx,text,x,y,maxWidth,lineHeight,maxLines=8) {
 }
 async function drawCollectionPNG() {
   if(!username()){setStatus("collectionStatus","กรอก X / Twitter account ก่อนดาวน์โหลด","error");$("username").focus();return;}
-  const rid=$("roundSelect").value;
-  const cards=collection.filter(x=>!rid||String(x.round_id)===String(rid));
-  if(!cards.length){setStatus("collectionStatus","ยังไม่มีการ์ดในรอบนี้","error");return;}
-  const round=rounds.find(r=>String(r.id)===String(rid));
-  const roundNo=round?.round_number ?? Math.max(1,rounds.findIndex(r=>String(r.id)===String(rid))+1);
-  const grouped={};cards.forEach(c=>{const day=String(c.day_number||c.day||1);(grouped[day] ||= []).push(c);});
-  const dayKeys=Object.keys(grouped).sort((a,b)=>Number(a)-Number(b));
+  const cards=[...collection].sort((a,b)=>String(a.received_date||"").localeCompare(String(b.received_date||"")));
+  if(!cards.length){setStatus("collectionStatus","ยังไม่มีการ์ดใน Collection","error");return;}
+  const grouped={};cards.forEach(c=>{const key=String(c.round_id||"all")+"|"+String(c.day_number||c.day||1)+"|"+String(c.received_date||"");(grouped[key] ||= []).push(c);});
+  const dayKeys=Object.keys(grouped);
   const W=1600, pad=72, headerH=230, gap=34, cardW=330, cardH=495, fortuneH=150, itemH=cardH+fortuneH+36;
   const perRow=2, dayH=Math.ceil(Math.max(...dayKeys.map(d=>grouped[d].length))/perRow)*itemH+110;
   const H=headerH+dayKeys.length*dayH+pad;
@@ -662,12 +660,12 @@ async function drawCollectionPNG() {
   for(let i=0;i<90;i++){const x=(i*193)%W,y=(i*317)%(H-40);ctx.fillStyle=i%3===0?"#9edcff":"#d9f2ff";ctx.globalAlpha=.38;ctx.font=`${10+(i%3)*4}px serif`;ctx.fillText(i%2?"✦":"·",x,y);}ctx.globalAlpha=1;
   roundedRect(ctx,32,32,W-64,H-64,28,null,"#8fcdf4");
   ctx.textAlign="center";ctx.fillStyle="#eaf7ff";ctx.font="58px 'Playfair Display', Georgia, serif";ctx.fillText("MY CARD COLLECTION",W/2,112);
-  ctx.fillStyle="#9edcff";ctx.font="25px 'DM Sans', sans-serif";ctx.fillText(String(round?.title || `ROUND ${roundNo}`),W/2,158);
+  ctx.fillStyle="#9edcff";ctx.font="25px 'DM Sans', sans-serif";ctx.fillText("ALL ROUNDS · COMPLETE COLLECTION",W/2,158);
   ctx.fillStyle="#eaf7ff";ctx.font="24px 'DM Sans', sans-serif";ctx.fillText("@"+username(),W/2,202);
   let y=headerH;
   for(const day of dayKeys){
-    const group=grouped[day];roundedRect(ctx,pad,y,W-pad*2,58,15,"rgba(116,190,244,0.16)","rgba(174,225,255,0.58)");
-    ctx.textAlign="left";ctx.fillStyle="#eaf7ff";ctx.font="bold 24px 'DM Sans', sans-serif";ctx.fillText(`DAY ${day}`,pad+24,y+37);
+    const group=grouped[day];const [roundId,dayNo,dateText]=day.split("|");const roundTitle=group[0]?.round_title||rounds.find(r=>String(r.id)===roundId)?.title||"ROUND";roundedRect(ctx,pad,y,W-pad*2,58,15,"rgba(116,190,244,0.16)","rgba(174,225,255,0.58)");
+    ctx.textAlign="left";ctx.fillStyle="#eaf7ff";ctx.font="bold 24px 'DM Sans', sans-serif";ctx.fillText(`${roundTitle} · DAY ${dayNo}`,pad+24,y+37);
     const date=group[0].received_date||group[0].checkin_date||"";ctx.textAlign="right";ctx.font="16px 'DM Sans', sans-serif";ctx.fillText(dateLabel(date),W-pad-24,y+36);
     y+=82;
     for(let i=0;i<group.length;i++){
@@ -709,9 +707,7 @@ $("downloadBtn").addEventListener("click",async()=>{
   try{
     const {blob}=await drawCollectionPNG();
     const safeName=username().replace(/[^a-z0-9_-]/gi,"_");
-    const round=rounds.find(r=>String(r.id)===$("roundSelect").value);
-    const roundNo=round?.round_number ?? 1;
-    const file=new File([blob],`daily-fortune-round-${roundNo}-${safeName}.png`,{type:"image/png"});
+    const file=new File([blob],`insomnia-card-collection-${safeName}.png`,{type:"image/png"});
     const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     if(isMobile && navigator.canShare && navigator.canShare({files:[file]})){
       await navigator.share({files:[file],title:"My Card Collection"});
